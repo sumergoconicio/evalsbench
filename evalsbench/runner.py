@@ -1,8 +1,8 @@
 """
-Execution engine with preflight validation, native Inspect AI runner, and Docker hygiene.
+Execution engine with preflight validation, auto-healing dependencies,
+live streaming progress bar, and polite Docker hygiene.
 """
 
-import asyncio
 import os
 import sys
 import time
@@ -14,6 +14,8 @@ from .config import get_log_dir_for_benchmark, load_chai_env
 from .registry import BENCHMARK_REGISTRY, BenchmarkTask
 from .shims import apply_inspect_openai_shims
 from .sandboxes import prune_inspect_containers
+from .doctor import ensure_dependencies_for_task
+from .progress import LiveProgressBar
 from .exporters import write_benchmark_report, update_models_yaml, sync_to_chai_vault
 
 
@@ -103,12 +105,15 @@ class EvalsRunner:
         skip_preflight: bool = False,
     ) -> Tuple[bool, Dict[str, Any], float]:
         """
-        Executes a single benchmark task, saving outputs strictly to:
-        logs/YYYYMMDD_modelname_benchmarkname/
+        Executes a single benchmark task with auto-healing dependencies,
+        live transparent progress bar, and polite post-eval Docker pruning.
         """
         task = BENCHMARK_REGISTRY.get(task_key)
         if not task:
             raise ValueError(f"Unknown benchmark: {task_key}. Available: {list(BENCHMARK_REGISTRY.keys())}")
+
+        # 1. Auto-doctor dependency check
+        ensure_dependencies_for_task(task_key)
 
         samples = limit or task.default_limit
         log_dir = get_log_dir_for_benchmark(self.model_name, task.name)
@@ -119,7 +124,7 @@ class EvalsRunner:
         print(f"Log Directory: {log_dir}")
         print("=" * 65)
 
-        # Preflight validation gate
+        # 2. Preflight validation gate
         if not skip_preflight:
             if not self.run_preflight_check(task):
                 print(f"⚠️ Skipping full batch for {task.name} due to preflight check failure.")
@@ -150,19 +155,30 @@ class EvalsRunner:
             cmd.extend(task.args)
 
         start_time = time.time()
+        raw_output_lines = []
+        progress_bar = LiveProgressBar(task.name, total_samples=samples)
+
         try:
-            proc = subprocess.run(
+            # 3. Stream process line-by-line to drive the live progress bar
+            proc = subprocess.Popen(
                 cmd,
                 env=env,
-                capture_output=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
                 text=True,
-                check=False,
+                bufsize=1,
             )
+
+            if proc.stdout:
+                for line in iter(proc.stdout.readline, ""):
+                    raw_output_lines.append(line)
+                    progress_bar.update_from_inspect_line(line)
+
+            proc.wait()
+            progress_bar.close()
+
             duration_s = time.time() - start_time
-            raw_output = proc.stdout + ("\n" + proc.stderr if proc.stderr else "")
-            
-            # Print live tail of inspect output
-            print(raw_output[-1500:] if len(raw_output) > 1500 else raw_output)
+            raw_output = "".join(raw_output_lines)
 
             # Parse scores
             scores = self._parse_scores_from_output(raw_output)
@@ -197,11 +213,12 @@ class EvalsRunner:
             if self.chai_sync:
                 sync_to_chai_vault(self.model_name, report_file, task.name)
 
-            print(f"✅ {task.name} Completed in {duration_s:.1f}s")
+            print(f"\n✅ {task.name} Completed in {duration_s:.1f}s")
             print(f"📝 Report saved to: {report_file}")
             return proc.returncode == 0, scores, duration_s
 
         finally:
+            # 4. Polite Docker sandbox and dangling image cleanup
             if task.docker_required:
                 prune_inspect_containers()
 
