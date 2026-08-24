@@ -1,0 +1,20 @@
+models:
+  nemotron3.5-lightning:
+    endpoint: http://localhost:2468/v1
+    last_updated: '2026-08-24T22:25:17.453865'
+    benchmarks:
+      IFEval:
+        scores:
+          prompt_strict_acc: 1.0
+          prompt_strict_stderr: 0.0
+          prompt_loose_acc: 1.0
+          prompt_loose_stderr: 0.0
+          inst_strict_acc: 1.0
+          inst_strict_stderr: 0.0
+          inst_loose_acc: 1.0
+          inst_loose_stderr: 0.0
+          final_acc: 1.0
+          final_stderr: 0.0
+        duration_seconds: 402.78
+        timestamp: '2026-08-24 22:25:17'
+    telemetry: {}

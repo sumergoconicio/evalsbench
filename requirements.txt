@@ -1,0 +1,7 @@
+inspect-ai>=0.3.260
+inspect-evals>=0.18.0
+inspect-harbor>=0.7.4
+harbor>=0.22.0
+openai>=3.3.1
+pyyaml>=6.0.0
+instruction_following_eval
