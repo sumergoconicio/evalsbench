@@ -367,5 +367,10 @@ def rebuild_leaderboard_json() -> Path:
     with open(LEADERBOARD_JSON_PATH, "w", encoding="utf-8") as f:
         json.dump(payload, f, indent=2)
 
-    print(f"📊 [Leaderboard Rebuilt] Saved Schema v1.0 data to {LEADERBOARD_JSON_PATH} ({len(models_payload)} models populated).")
+    # Also export as leaderboard.js for zero-CORS file:// local browser viewing
+    js_path = DASHBOARD_DATA_DIR / "leaderboard.js"
+    with open(js_path, "w", encoding="utf-8") as f:
+        f.write(f"window.LEADERBOARD_DATA = {json.dumps(payload, indent=2)};\n")
+
+    print(f"📊 [Leaderboard Rebuilt] Saved Schema v1.0 data to {LEADERBOARD_JSON_PATH} and {js_path} ({len(models_payload)} models populated).")
     return LEADERBOARD_JSON_PATH
