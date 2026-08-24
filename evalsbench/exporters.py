@@ -122,6 +122,12 @@ def write_benchmark_report(
             "timestamp": timestamp,
         }, f, indent=2)
 
+    try:
+        from .hydrator import rebuild_leaderboard_json
+        rebuild_leaderboard_json()
+    except Exception:
+        pass
+
     return report_file
 
 

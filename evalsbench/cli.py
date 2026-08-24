@@ -4,6 +4,7 @@ Interactive guided check-in and argument-driven command line interface for Evals
 
 import argparse
 import sys
+from pathlib import Path
 from typing import List, Tuple
 
 from .config import auto_probe_local_endpoint, load_chai_env
@@ -25,6 +26,7 @@ def parse_args():
     parser.add_argument("--max-connections", "-c", type=int, default=None, help="Concurrent parallel connection slots")
     parser.add_argument("--skip-preflight", action="store_true", help="Skip 1-sample preflight validation gate")
     parser.add_argument("--no-chai-sync", action="store_true", help="Disable auto-syncing scorecards to ~/chai/references/models/")
+    parser.add_argument("--dashboard", action="store_true", help="Rebuild leaderboard data and display dashboard file path")
     return parser.parse_args()
 
 
@@ -146,6 +148,15 @@ def main():
     api_key = args.api_key
     limit = args.limit or 25
     slots = args.max_connections or 8
+    if args.dashboard:
+        from .hydrator import rebuild_leaderboard_json
+        path = rebuild_leaderboard_json()
+        dash_html = Path(__file__).resolve().parent.parent / "dashboard" / "index.html"
+        print(f"\n📊 [Leaderboard Ready]")
+        print(f"Data file:      {path}")
+        print(f"Dashboard View: file://{dash_html}")
+        return
+
     skip_preflight = args.skip_preflight
 
     # Auto-probe if missing

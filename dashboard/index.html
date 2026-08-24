@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EvalsBench: Model Leaderboard & Profiling</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="vendor/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo-area">
+        <span class="logo-icon">📊</span>
+        <div>
+          <h1>EvalsBench</h1>
+          <p class="subtitle">Multi-Dimensional Model Leaderboard & Hardware Profiling</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="pin-selector-box">
+          <label for="pin-model-select">📌 Pin Model to Compare:</label>
+          <select id="pin-model-select">
+            <option value="">None (Absolute Scores)</option>
+          </select>
+        </div>
+        <button id="refresh-btn" class="btn btn-secondary">🔄 Refresh Data</button>
+      </div>
+    </header>
+
+    <!-- Navigation / Size Class Filters -->
+    <nav class="size-class-nav">
+      <button class="nav-tab active" data-filter="all">All Models</button>
+      <button class="nav-tab" data-filter="edge">Edge (≤8B)</button>
+      <button class="nav-tab" data-filter="mid">Mid-Weight (14B–35B)</button>
+      <button class="nav-tab" data-filter="moe">Workhorse MoE</button>
+      <button class="nav-tab" data-filter="titan">Titan (70B+)</button>
+      <button class="nav-tab" data-filter="cloud">Cloud Frontier</button>
+    </nav>
+
+    <!-- Main Grid -->
+    <main class="main-grid">
+      <!-- Left Column: Primary Leaderboard Table -->
+      <section class="card table-card">
+        <div class="card-header">
+          <h2>🏆 Performance & Capability Scoreboard</h2>
+          <div class="metric-filter-box">
+            <label for="subcat-select">Subcategory Metric:</label>
+            <select id="subcat-select">
+              <option value="overall">Overall Aggregate Pass Rate</option>
+              <option value="ifeval_strict">IFEval: Prompt Strict Accuracy</option>
+              <option value="ifeval_inst">IFEval: Instruction Strict</option>
+              <option value="code_python">IFEvalCode: Python Correctness</option>
+              <option value="code_ts">IFEvalCode: TypeScript Correctness</option>
+              <option value="code_java">IFEvalCode: Java Correctness</option>
+              <option value="agentbench_os">AgentBench: OS Interaction Accuracy</option>
+              <option value="humaneval_p1">HumanEval: Pass@1 Accuracy</option>
+            </select>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="leaderboard-table" id="leaderboard-table">
+            <thead>
+              <tr>
+                <th>Model Name</th>
+                <th>Size Class</th>
+                <th>Selected Metric</th>
+                <th>IFEval (Strict)</th>
+                <th>HumanEval (Pass@1)</th>
+                <th>IFEvalCode</th>
+                <th>AgentBench (OS)</th>
+                <th>Source Lab</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboard-tbody">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Right Column: Hardware Metabolism & Radar Profiling -->
+      <section class="card sidebar-card">
+        <!-- VRAM & KV Cache Calculator -->
+        <div class="kv-calculator-widget">
+          <div class="widget-header">
+            <h3>⚡ VRAM & KV Cache Calculator</h3>
+            <span class="badge" id="calc-model-badge">Nemotron 3.5 Lightning</span>
+          </div>
+          <div class="slider-control">
+            <div class="slider-labels">
+              <span>Context Length:</span>
+              <strong id="context-val-label">256k tokens</strong>
+            </div>
+            <input type="range" id="context-slider" min="8192" max="1048576" step="8192" value="262144">
+          </div>
+          <div class="kv-metrics-grid">
+            <div class="metric-tile">
+              <span class="label">KV Cache / GPU</span>
+              <span class="val highlight" id="calc-kv-vram">0.38 GiB</span>
+            </div>
+            <div class="metric-tile">
+              <span class="label">Weights VRAM</span>
+              <span class="val" id="calc-weight-vram">10.35 GiB</span>
+            </div>
+            <div class="metric-tile">
+              <span class="label">Total Est. VRAM</span>
+              <span class="val" id="calc-total-vram">16.23 GiB</span>
+            </div>
+            <div class="metric-tile">
+              <span class="label">KV Scaling Rate</span>
+              <span class="val" id="calc-kv-rate">1.50 KiB/tok</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Radar Chart -->
+        <div class="radar-widget">
+          <h3>🧬 Multi-Dimensional Capability Radar</h3>
+          <div class="chart-container">
+            <canvas id="radarCanvas"></canvas>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

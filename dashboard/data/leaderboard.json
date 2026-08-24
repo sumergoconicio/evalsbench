@@ -1,0 +1,125 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "1787606220.503289",
+  "models": {
+    "nemotron3.5-lightning": {
+      "id": "nemotron3.5-lightning",
+      "name": "nemotron3.5-lightning",
+      "is_cloud": false,
+      "specs": {
+        "architecture": "NemotronHForCausalLM",
+        "attention_layers": 6,
+        "mamba_layers": 23,
+        "moe_layers": 23,
+        "num_kv_heads": 2,
+        "head_dim": 128,
+        "context_window": 1048576,
+        "kv_bytes_per_token_per_gpu": 1536,
+        "vram_weights_gib": 10.35,
+        "size_class": "Mid-Weight MoE (30B A3B)",
+        "huggingface_url": "https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4"
+      },
+      "benchmarks": {
+        "IFEval": {
+          "prompt_strict_acc": 1.0,
+          "prompt_strict_stderr": 0.0,
+          "prompt_loose_acc": 1.0,
+          "prompt_loose_stderr": 0.0,
+          "inst_strict_acc": 1.0,
+          "inst_strict_stderr": 0.0,
+          "inst_loose_acc": 1.0,
+          "inst_loose_stderr": 0.0,
+          "final_acc": 1.0,
+          "final_stderr": 0.0
+        }
+      }
+    },
+    "claude-3-5-sonnet": {
+      "id": "claude-3-5-sonnet",
+      "name": "Claude 3.5 Sonnet (20241022)",
+      "is_cloud": true,
+      "specs": {
+        "total_params_b": "Unknown (Dense/MoE)",
+        "active_params_b": "Unknown",
+        "context_window": 200000,
+        "kv_cache_bytes_per_token_per_gpu": 2400
+      },
+      "benchmarks": {
+        "IFEval": {
+          "prompt_strict_acc": 0.884,
+          "inst_strict_acc": 0.912,
+          "final_acc": 0.898
+        },
+        "HumanEval": {
+          "pass@1": 0.937
+        },
+        "IFEvalCode": {
+          "python_correctness": 0.92,
+          "typescript_correctness": 0.88,
+          "overall_accuracy": 0.65
+        },
+        "AgentBench": {
+          "accuracy": 0.52
+        }
+      }
+    },
+    "gpt-4o": {
+      "id": "gpt-4o",
+      "name": "GPT-4o (2024-11-20)",
+      "is_cloud": true,
+      "specs": {
+        "total_params_b": "Unknown (~200B MoE)",
+        "active_params_b": "Unknown",
+        "context_window": 128000,
+        "kv_cache_bytes_per_token_per_gpu": 2400
+      },
+      "benchmarks": {
+        "IFEval": {
+          "prompt_strict_acc": 0.865,
+          "inst_strict_acc": 0.895,
+          "final_acc": 0.88
+        },
+        "HumanEval": {
+          "pass@1": 0.902
+        },
+        "IFEvalCode": {
+          "python_correctness": 0.89,
+          "typescript_correctness": 0.84,
+          "overall_accuracy": 0.58
+        },
+        "AgentBench": {
+          "accuracy": 0.48
+        }
+      }
+    },
+    "gemini-2-0-flash": {
+      "id": "gemini-2-0-flash",
+      "name": "Gemini 2.0 Flash",
+      "is_cloud": true,
+      "specs": {
+        "total_params_b": "Unknown (~30B-70B)",
+        "active_params_b": "Unknown",
+        "context_window": 1048576,
+        "kv_cache_bytes_per_token_per_gpu": 1800
+      },
+      "benchmarks": {
+        "IFEval": {
+          "prompt_strict_acc": 0.852,
+          "inst_strict_acc": 0.889,
+          "final_acc": 0.871
+        },
+        "HumanEval": {
+          "pass@1": 0.89
+        },
+        "IFEvalCode": {
+          "python_correctness": 0.88,
+          "typescript_correctness": 0.81,
+          "overall_accuracy": 0.52
+        },
+        "AgentBench": {
+          "accuracy": 0.44
+        }
+      }
+    }
+  }
+}
