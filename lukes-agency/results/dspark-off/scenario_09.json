@@ -1,0 +1,92 @@
+{
+  "id": 9,
+  "area": "Tickets",
+  "prompt": "File a high ticket assigned to whoever leads Support.",
+  "steps": [
+    {
+      "round": 1,
+      "wall": 1.5264654030324891,
+      "ttft": 1.5262841540388763,
+      "usage": {
+        "prompt_tokens": 1331,
+        "total_tokens": 1358,
+        "completion_tokens": 27
+      },
+      "content": null,
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "chatcmpl-tool-96acef3dabe28dc3",
+          "type": "function",
+          "function": {
+            "name": "directory_search",
+            "arguments": "{\"department\": \"Support\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "directory_search",
+          "args": "{\"department\": \"Support\"}",
+          "result": "{\"employees\": [\"Carol Nguyen (employee id E003, Support Lead, department Support, team Support, status Active)\", \"Grace Lee (employee id E007, Support Agent, department Support, team Support, status Active)\", \"Henry Miller (employee id E008, Support Agent, department Support, team Support, status Active)\"], \"count\": 3}"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "wall": 2.7630017150077038,
+      "ttft": 2.5317928839940578,
+      "usage": {
+        "prompt_tokens": 1454,
+        "total_tokens": 1533,
+        "completion_tokens": 79
+      },
+      "content": "The Support Lead is Carol Nguyen (E003). I'll create the high-priority ticket assigned to her.\n\n",
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "chatcmpl-tool-a2477f74000e0aaf",
+          "type": "function",
+          "function": {
+            "name": "create_support_ticket",
+            "arguments": "{\"title\": \"High priority ticket\", \"priority\": \"high\", \"assignee\": \"Carol Nguyen\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "create_support_ticket",
+          "args": "{\"title\": \"High priority ticket\", \"priority\": \"high\", \"assignee\": \"Carol Nguyen\"}",
+          "result": "{\"status\": \"created\", \"ticket_id\": \"TCK-0001\", \"title\": \"High priority ticket\", \"priority\": \"high\", \"assignee\": \"Carol Nguyen\"}"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "wall": 1.1728633809834719,
+      "ttft": 1.1727376689668745,
+      "usage": {
+        "prompt_tokens": 1591,
+        "total_tokens": 1619,
+        "completion_tokens": 28
+      },
+      "content": "Done. I filed a high-priority ticket (TCK-0001) assigned to Carol Nguyen, the Support Lead.",
+      "reasoning_content": null,
+      "tool_calls": null,
+      "finish": null
+    }
+  ],
+  "rounds": 3,
+  "maxed_out": false,
+  "final_text": "Done. I filed a high-priority ticket (TCK-0001) assigned to Carol Nguyen, the Support Lead.",
+  "final_text_plus_reasoning": "The Support Lead is Carol Nguyen (E003). I'll create the high-priority ticket assigned to her.\n\n\nDone. I filed a high-priority ticket (TCK-0001) assigned to Carol Nguyen, the Support Lead.",
+  "metrics": {
+    "accepted_tokens": 87.0,
+    "draft_tokens": 322.0,
+    "drafts": 46.0
+  },
+  "passed": true,
+  "check_detail": "ticket priority=high assignee=Carol Nguyen title=high priority ticket"
+}

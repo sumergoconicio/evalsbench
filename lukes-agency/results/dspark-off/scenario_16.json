@@ -1,0 +1,62 @@
+{
+  "id": 16,
+  "area": "Precision",
+  "prompt": "Look up employee E003 and tell me their department.",
+  "steps": [
+    {
+      "round": 1,
+      "wall": 1.4199918970116414,
+      "ttft": 1.4198798810248263,
+      "usage": {
+        "prompt_tokens": 1334,
+        "total_tokens": 1365,
+        "completion_tokens": 31
+      },
+      "content": null,
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "chatcmpl-tool-851434ef82f7c115",
+          "type": "function",
+          "function": {
+            "name": "lookup_employee",
+            "arguments": "{\"employee_id\": \"E003\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "lookup_employee",
+          "args": "{\"employee_id\": \"E003\"}",
+          "result": "{\"employee\": \"Carol Nguyen (employee id E003, Support Lead, department Support, team Support, status Active)\"}"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "wall": 1.6517047619563527,
+      "ttft": 1.651545496948529,
+      "usage": {
+        "prompt_tokens": 1409,
+        "total_tokens": 1427,
+        "completion_tokens": 18
+      },
+      "content": "Employee E003 is **Carol Nguyen**, and their department is **Support**.",
+      "reasoning_content": null,
+      "tool_calls": null,
+      "finish": null
+    }
+  ],
+  "rounds": 2,
+  "maxed_out": false,
+  "final_text": "Employee E003 is **Carol Nguyen**, and their department is **Support**.",
+  "final_text_plus_reasoning": "Employee E003 is **Carol Nguyen**, and their department is **Support**.",
+  "metrics": {
+    "accepted_tokens": 36.0,
+    "draft_tokens": 105.0,
+    "drafts": 15.0
+  },
+  "passed": true,
+  "check_detail": "lookup used: True; text: Employee E003 is **Carol Nguyen**, and their department is **Support**."
+}

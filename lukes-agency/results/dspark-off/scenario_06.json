@@ -1,0 +1,62 @@
+{
+  "id": 6,
+  "area": "Scheduling",
+  "prompt": "Book Room A this Friday 09:00-10:00 UTC for sprint planning.",
+  "steps": [
+    {
+      "round": 1,
+      "wall": 2.749769959016703,
+      "ttft": 2.587714269000571,
+      "usage": {
+        "prompt_tokens": 1343,
+        "total_tokens": 1434,
+        "completion_tokens": 91
+      },
+      "content": null,
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "chatcmpl-tool-912ff9d523fd141d",
+          "type": "function",
+          "function": {
+            "name": "book_meeting_room",
+            "arguments": "{\"room\": \"Conference Room A\", \"start\": \"2026-06-05T09:00:00Z\", \"end\": \"2026-06-05T10:00:00Z\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "book_meeting_room",
+          "args": "{\"room\": \"Conference Room A\", \"start\": \"2026-06-05T09:00:00Z\", \"end\": \"2026-06-05T10:00:00Z\"}",
+          "result": "{\"status\": \"booked\", \"room\": \"Conference Room A\", \"start\": \"2026-06-05T09:00:00Z\", \"end\": \"2026-06-05T10:00:00Z\", \"booking_id\": \"BK-0002\"}"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "wall": 1.653896338015329,
+      "ttft": 1.6537038889946416,
+      "usage": {
+        "prompt_tokens": 1528,
+        "total_tokens": 1577,
+        "completion_tokens": 49
+      },
+      "content": "Booked! Conference Room A is reserved for sprint planning this Friday, June 5, 2026, 09:00\u201310:00 UTC (booking ID: BK-0002).",
+      "reasoning_content": null,
+      "tool_calls": null,
+      "finish": null
+    }
+  ],
+  "rounds": 2,
+  "maxed_out": false,
+  "final_text": "Booked! Conference Room A is reserved for sprint planning this Friday, June 5, 2026, 09:00\u201310:00 UTC (booking ID: BK-0002).",
+  "final_text_plus_reasoning": "Booked! Conference Room A is reserved for sprint planning this Friday, June 5, 2026, 09:00\u201310:00 UTC (booking ID: BK-0002).",
+  "metrics": {
+    "accepted_tokens": 99.0,
+    "draft_tokens": 287.0,
+    "drafts": 41.0
+  },
+  "passed": false,
+  "check_detail": "no valid booking for Conference Room A 2026-05-29T09:00Z..10:00:00Z; calls=['book_meeting_room']"
+}

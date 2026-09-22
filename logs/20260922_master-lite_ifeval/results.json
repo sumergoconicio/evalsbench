@@ -1,0 +1,21 @@
+{
+  "model": "master-lite",
+  "endpoint": "http://localhost:12468/v1",
+  "benchmark": "IFEval",
+  "samples": 25,
+  "duration_s": 1096.0525720119476,
+  "scores": {
+    "prompt_strict_acc": 0.72,
+    "prompt_strict_stderr": 0.092,
+    "prompt_loose_acc": 0.72,
+    "prompt_loose_stderr": 0.092,
+    "inst_strict_acc": 0.769,
+    "inst_strict_stderr": 0.081,
+    "inst_loose_acc": 0.769,
+    "inst_loose_stderr": 0.081,
+    "final_acc": 0.745,
+    "final_stderr": 0.099
+  },
+  "eval_log": "/home/sumergoconicio/Documents/Code/EvalsBench/logs/20260922_master-lite_ifeval/2026-09-22T09-42-06-00-00_ifeval_nUtqoGjscS6qZQjBKbicKv.eval",
+  "timestamp": "2026-09-22 12:00:17"
+}

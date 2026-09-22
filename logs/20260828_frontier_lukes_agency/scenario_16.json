@@ -1,0 +1,66 @@
+{
+  "id": 16,
+  "area": "Precision",
+  "prompt": "Look up employee E003 and tell me their department.",
+  "steps": [
+    {
+      "round": 1,
+      "wall": 0.6551872089039534,
+      "ttft": 0.6550713849719614,
+      "usage": {
+        "prompt_tokens": 1422,
+        "total_tokens": 1453,
+        "completion_tokens": 31,
+        "prompt_tokens_details": null,
+        "reasoning_tokens": 0
+      },
+      "content": null,
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "call_3aa8f58dab4948d0bb5d0788",
+          "type": "function",
+          "function": {
+            "name": "lookup_employee",
+            "arguments": "{\"employee_id\": \"E003\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "lookup_employee",
+          "args": "{\"employee_id\": \"E003\"}",
+          "result": "{\"employee\": \"Carol Nguyen (employee id E003, Support Lead, department Support, team Support, status Active)\"}"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "wall": 0.788492175983265,
+      "ttft": 0.78839180781506,
+      "usage": {
+        "prompt_tokens": 1497,
+        "total_tokens": 1529,
+        "completion_tokens": 32,
+        "prompt_tokens_details": null,
+        "reasoning_tokens": 0
+      },
+      "content": "Employee E003 is **Carol Nguyen**, and their department is **Support** (team: Support, role: Support Lead, status: Active).",
+      "reasoning_content": null,
+      "tool_calls": null,
+      "finish": null
+    }
+  ],
+  "rounds": 2,
+  "maxed_out": false,
+  "final_text": "Employee E003 is **Carol Nguyen**, and their department is **Support** (team: Support, role: Support Lead, status: Active).",
+  "final_text_plus_reasoning": "Employee E003 is **Carol Nguyen**, and their department is **Support** (team: Support, role: Support Lead, status: Active).",
+  "metrics": {
+    "accepted_tokens": 0,
+    "draft_tokens": 0,
+    "drafts": 0
+  },
+  "passed": true,
+  "check_detail": "lookup used: True; text: Employee E003 is **Carol Nguyen**, and their department is **Support** (team: Support, role: Support"
+}

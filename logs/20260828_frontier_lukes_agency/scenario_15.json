@@ -1,0 +1,66 @@
+{
+  "id": 15,
+  "area": "Focus",
+  "prompt": "What team is Alice Chen on?",
+  "steps": [
+    {
+      "round": 1,
+      "wall": 0.5985865471884608,
+      "ttft": 0.5984765791799873,
+      "usage": {
+        "prompt_tokens": 1416,
+        "total_tokens": 1443,
+        "completion_tokens": 27,
+        "prompt_tokens_details": null,
+        "reasoning_tokens": 0
+      },
+      "content": null,
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "call_8fd87532a7d14314ae154292",
+          "type": "function",
+          "function": {
+            "name": "lookup_employee",
+            "arguments": "{\"name\": \"Alice Chen\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "lookup_employee",
+          "args": "{\"name\": \"Alice Chen\"}",
+          "result": "{\"employee\": \"Alice Chen (employee id E001, Engineer, department Engineering, team Eng Core, status Active)\"}"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "wall": 0.8458270661067218,
+      "ttft": 0.8455301381181926,
+      "usage": {
+        "prompt_tokens": 1487,
+        "total_tokens": 1517,
+        "completion_tokens": 30,
+        "prompt_tokens_details": null,
+        "reasoning_tokens": 0
+      },
+      "content": "Alice Chen is on the **Eng Core** team (Engineering department). She's an Engineer, currently active (employee ID E001).",
+      "reasoning_content": null,
+      "tool_calls": null,
+      "finish": null
+    }
+  ],
+  "rounds": 2,
+  "maxed_out": false,
+  "final_text": "Alice Chen is on the **Eng Core** team (Engineering department). She's an Engineer, currently active (employee ID E001).",
+  "final_text_plus_reasoning": "Alice Chen is on the **Eng Core** team (Engineering department). She's an Engineer, currently active (employee ID E001).",
+  "metrics": {
+    "accepted_tokens": 0,
+    "draft_tokens": 0,
+    "drafts": 0
+  },
+  "passed": true,
+  "check_detail": "wiki used: False; text: Alice Chen is on the **Eng Core** team (Engineering department). She's an Engineer, currently active"
+}

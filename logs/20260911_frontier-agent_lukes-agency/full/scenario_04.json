@@ -1,0 +1,81 @@
+{
+  "id": 4,
+  "area": "Lookup",
+  "prompt": "List everyone who works in Support or Platform.",
+  "steps": [
+    {
+      "round": 1,
+      "wall": 1.4003318489994854,
+      "ttft": 0.6281893749983283,
+      "usage": {
+        "completion_tokens": 64,
+        "completion_tokens_details": {
+          "reasoning_tokens": 35
+        },
+        "prompt_tokens": 1495,
+        "total_tokens": 1559
+      },
+      "content": null,
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "chatcmpl-tool-8fb37f7583fac046",
+          "type": "function",
+          "function": {
+            "name": "directory_search",
+            "arguments": "{\"department\": \"Support\"}"
+          }
+        },
+        {
+          "id": "chatcmpl-tool-9fc39b6c21ad5720",
+          "type": "function",
+          "function": {
+            "name": "directory_search",
+            "arguments": "{\"department\": \"Platform\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "directory_search",
+          "args": "{\"department\": \"Support\"}",
+          "result": "{\"employees\": [\"Carol Nguyen (employee id E003, Support Lead, department Support, team Support, status Active)\", \"Grace Lee (employee id E007, Support Agent, department Support, team Support, status Active)\", \"Henry Miller (employee id E008, Support Agent, department Support, team Support, status Active)\"], \"count\": 3}"
+        },
+        {
+          "name": "directory_search",
+          "args": "{\"department\": \"Platform\"}",
+          "result": "{\"employees\": [\"Bob Martinez (employee id E002, Platform Team Lead, department Platform, team Platform, status Active)\", \"Evan Ross (employee id E005, Engineer, department Platform, team Platform, status Active)\"], \"count\": 2}"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "wall": 5.037410445002024,
+      "ttft": 0.7009991610029829,
+      "usage": {
+        "completion_tokens": 282,
+        "completion_tokens_details": {
+          "reasoning_tokens": 119
+        },
+        "prompt_tokens": 1684,
+        "total_tokens": 1966
+      },
+      "content": "Here are all the employees who work in **Support** or **Platform**:\n\n### Support Department (3)\n| Name | Employee ID | Title | Status |\n|------|------------|-------|--------|\n| Carol Nguyen | E003 | Support Lead | Active |\n| Grace Lee | E007 | Support Agent | Active |\n| Henry Miller | E008 | Support Agent | Active |\n\n### Platform Department (2)\n| Name | Employee ID | Title | Status |\n|------|------------|-------|--------|\n| Bob Martinez | E002 | Platform Team Lead | Active |\n| Evan Ross | E005 | Engineer | Active |\n\nThat's **5 employees** total across both departments.",
+      "reasoning_content": null,
+      "tool_calls": null,
+      "finish": null
+    }
+  ],
+  "rounds": 2,
+  "maxed_out": false,
+  "final_text": "Here are all the employees who work in **Support** or **Platform**:\n\n### Support Department (3)\n| Name | Employee ID | Title | Status |\n|------|------------|-------|--------|\n| Carol Nguyen | E003 | Support Lead | Active |\n| Grace Lee | E007 | Support Agent | Active |\n| Henry Miller | E008 | Support Agent | Active |\n\n### Platform Department (2)\n| Name | Employee ID | Title | Status |\n|------|------------|-------|--------|\n| Bob Martinez | E002 | Platform Team Lead | Active |\n| Evan Ross | E005 | Engineer | Active |\n\nThat's **5 employees** total across both departments.",
+  "final_text_plus_reasoning": "Here are all the employees who work in **Support** or **Platform**:\n\n### Support Department (3)\n| Name | Employee ID | Title | Status |\n|------|------------|-------|--------|\n| Carol Nguyen | E003 | Support Lead | Active |\n| Grace Lee | E007 | Support Agent | Active |\n| Henry Miller | E008 | Support Agent | Active |\n\n### Platform Department (2)\n| Name | Employee ID | Title | Status |\n|------|------------|-------|--------|\n| Bob Martinez | E002 | Platform Team Lead | Active |\n| Evan Ross | E005 | Engineer | Active |\n\nThat's **5 employees** total across both departments.",
+  "metrics": {
+    "accepted_tokens": 0,
+    "draft_tokens": 0,
+    "drafts": 0
+  },
+  "passed": true,
+  "check_detail": "found names: ['Carol Nguyen', 'Grace Lee', 'Henry Miller', 'Bob Martinez', 'Evan Ross']"
+}

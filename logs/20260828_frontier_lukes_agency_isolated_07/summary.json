@@ -1,0 +1,11 @@
+{
+  "total": 1,
+  "passed": 1,
+  "metrics": {
+    "accepted_tokens": 0,
+    "draft_tokens": 0,
+    "drafts": 0
+  },
+  "elapsed_s": 3.6,
+  "draft_acceptance": null
+}

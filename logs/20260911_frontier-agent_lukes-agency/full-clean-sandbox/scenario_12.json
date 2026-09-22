@@ -1,0 +1,68 @@
+{
+  "id": 12,
+  "area": "Currency",
+  "prompt": "How much is 100 USD in JPY? Use official MiniCorp rates.",
+  "steps": [
+    {
+      "round": 1,
+      "wall": 1.422272638999857,
+      "ttft": 0.6577433429993107,
+      "usage": {
+        "completion_tokens": 64,
+        "completion_tokens_details": {
+          "reasoning_tokens": 28
+        },
+        "prompt_tokens": 1504,
+        "total_tokens": 1568
+      },
+      "content": null,
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "chatcmpl-tool-868e06546959d640",
+          "type": "function",
+          "function": {
+            "name": "convert_currency",
+            "arguments": "{\"amount\": 100, \"from_currency\": \"USD\", \"to_currency\": \"JPY\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "convert_currency",
+          "args": "{\"amount\": 100, \"from_currency\": \"USD\", \"to_currency\": \"JPY\"}",
+          "result": "{\"amount\": 15000.0, \"currency\": \"JPY\", \"rate_used\": 150.0}"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "wall": 2.335291232004238,
+      "ttft": 0.6489387059991714,
+      "usage": {
+        "completion_tokens": 119,
+        "completion_tokens_details": {
+          "reasoning_tokens": 78
+        },
+        "prompt_tokens": 1589,
+        "total_tokens": 1708
+      },
+      "content": "According to official MiniCorp rates, **100 USD = 15,000 JPY** (at a rate of 1 USD = 150 JPY).",
+      "reasoning_content": null,
+      "tool_calls": null,
+      "finish": null
+    }
+  ],
+  "rounds": 2,
+  "maxed_out": false,
+  "final_text": "According to official MiniCorp rates, **100 USD = 15,000 JPY** (at a rate of 1 USD = 150 JPY).",
+  "final_text_plus_reasoning": "According to official MiniCorp rates, **100 USD = 15,000 JPY** (at a rate of 1 USD = 150 JPY).",
+  "metrics": {
+    "accepted_tokens": 0,
+    "draft_tokens": 0,
+    "drafts": 0
+  },
+  "passed": true,
+  "check_detail": "convert 100.0 USD->JPY = 15000.0"
+}

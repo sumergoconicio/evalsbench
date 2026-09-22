@@ -1,0 +1,68 @@
+{
+  "id": 9,
+  "area": "Tickets",
+  "prompt": "File a high ticket assigned to whoever leads Support.",
+  "steps": [
+    {
+      "round": 1,
+      "wall": 1.8985902020067442,
+      "ttft": 0.6290607140035718,
+      "usage": {
+        "completion_tokens": 94,
+        "completion_tokens_details": {
+          "reasoning_tokens": 56
+        },
+        "prompt_tokens": 1496,
+        "total_tokens": 1590
+      },
+      "content": "I need to find who leads the Support department first, then file the ticket. Let me look that up.\n",
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "chatcmpl-tool-939982d4cae282d2",
+          "type": "function",
+          "function": {
+            "name": "directory_search",
+            "arguments": "{\"department\": \"Support\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "directory_search",
+          "args": "{\"department\": \"Support\"}",
+          "result": "{\"employees\": [\"Carol Nguyen (employee id E003, Support Lead, department Support, team Support, status Active)\", \"Grace Lee (employee id E007, Support Agent, department Support, team Support, status Active)\", \"Henry Miller (employee id E008, Support Agent, department Support, team Support, status Active)\"], \"count\": 3}"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "wall": 2.8387628950004,
+      "ttft": 0.6544841220020317,
+      "usage": {
+        "completion_tokens": 149,
+        "completion_tokens_details": {
+          "reasoning_tokens": 104
+        },
+        "prompt_tokens": 1633,
+        "total_tokens": 1782
+      },
+      "content": "I found that **Carol Nguyen** (E003) is the Support Lead. Before I file the ticket, I need a title/description for it. Could you provide the ticket title or issue details?",
+      "reasoning_content": null,
+      "tool_calls": null,
+      "finish": null
+    }
+  ],
+  "rounds": 2,
+  "maxed_out": false,
+  "final_text": "I found that **Carol Nguyen** (E003) is the Support Lead. Before I file the ticket, I need a title/description for it. Could you provide the ticket title or issue details?",
+  "final_text_plus_reasoning": "I need to find who leads the Support department first, then file the ticket. Let me look that up.\n\nI found that **Carol Nguyen** (E003) is the Support Lead. Before I file the ticket, I need a title/description for it. Could you provide the ticket title or issue details?",
+  "metrics": {
+    "accepted_tokens": 0,
+    "draft_tokens": 0,
+    "drafts": 0
+  },
+  "passed": false,
+  "check_detail": "no matching ticket (want prio=high, assignee in {'E003', 'Carol Nguyen'}, title~=None); calls=['directory_search']"
+}

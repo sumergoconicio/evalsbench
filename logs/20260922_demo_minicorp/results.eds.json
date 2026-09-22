@@ -1,0 +1,9 @@
+{
+  "benchmark": "MiniCorp",
+  "timestamp": "2026-09-22 21:45:09",
+  "model": "demo",
+  "endpoint": "http://localhost:12468/v1",
+  "raw_log": null,
+  "eds_tag": "eds_tri_axis",
+  "aggregates": {}
+}

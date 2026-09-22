@@ -26,10 +26,24 @@ wheels/
 
 # Virtual environments
 .env
+.env.*
+*.env
 .venv
 env/
 venv/
 ENV/
+
+# Secrets & credentials (never commit)
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+credentials.json
+client-secret*.json
+service-account*.json
+.secrets/
+.htpasswd
 
 # Inspect AI binary evaluation traces & caches
 *.eval
@@ -44,3 +58,44 @@ container_vllm_cache/
 scratch/
 tmp/
 *.tmp
+
+# Binaries & compiled objects
+*.o
+*.a
+*.dll
+*.dylib
+*.exe
+
+# Model weights & large ML artifacts (never commit)
+*.safetensors
+*.gguf
+*.ckpt
+*.pt
+*.pth
+*.onnx
+*.npy
+*.npz
+*.parquet
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Node
+node_modules/
+package-lock.json
+
+# OS & editor junk
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Test & coverage caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/

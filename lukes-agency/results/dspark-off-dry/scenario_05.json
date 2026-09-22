@@ -1,0 +1,92 @@
+{
+  "id": 5,
+  "area": "Scheduling",
+  "prompt": "Book Conference Room B tomorrow 14:00-15:00 UTC for a standup.",
+  "steps": [
+    {
+      "round": 1,
+      "wall": 2.4922392159933224,
+      "ttft": 2.492109392012935,
+      "usage": {
+        "prompt_tokens": 1344,
+        "total_tokens": 1434,
+        "completion_tokens": 90
+      },
+      "content": null,
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "chatcmpl-tool-a040639b30ba549b",
+          "type": "function",
+          "function": {
+            "name": "check_availability",
+            "arguments": "{\"room\": \"Conference Room B\", \"start\": \"2026-05-29T14:00:00Z\", \"end\": \"2026-05-29T15:00:00Z\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "check_availability",
+          "args": "{\"room\": \"Conference Room B\", \"start\": \"2026-05-29T14:00:00Z\", \"end\": \"2026-05-29T15:00:00Z\"}",
+          "result": "{\"available\": true, \"room\": \"Conference Room B\", \"start\": \"2026-05-29T14:00:00Z\", \"end\": \"2026-05-29T15:00:00Z\"}"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "wall": 2.51571603002958,
+      "ttft": 2.5155616300180554,
+      "usage": {
+        "prompt_tokens": 1514,
+        "total_tokens": 1605,
+        "completion_tokens": 91
+      },
+      "content": null,
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "chatcmpl-tool-b34c7d011817ba5a",
+          "type": "function",
+          "function": {
+            "name": "book_meeting_room",
+            "arguments": "{\"room\": \"Conference Room B\", \"start\": \"2026-05-29T14:00:00Z\", \"end\": \"2026-05-29T15:00:00Z\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "book_meeting_room",
+          "args": "{\"room\": \"Conference Room B\", \"start\": \"2026-05-29T14:00:00Z\", \"end\": \"2026-05-29T15:00:00Z\"}",
+          "result": "{\"status\": \"booked\", \"room\": \"Conference Room B\", \"start\": \"2026-05-29T14:00:00Z\", \"end\": \"2026-05-29T15:00:00Z\", \"booking_id\": \"BK-0001\"}"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "wall": 1.605192751972936,
+      "ttft": 1.605075727973599,
+      "usage": {
+        "prompt_tokens": 1699,
+        "total_tokens": 1750,
+        "completion_tokens": 51
+      },
+      "content": "Booked. Conference Room B is reserved for tomorrow (2026-05-29) 14:00\u201315:00 UTC for your standup. Booking ID: BK-0001.",
+      "reasoning_content": null,
+      "tool_calls": null,
+      "finish": null
+    }
+  ],
+  "rounds": 3,
+  "maxed_out": false,
+  "final_text": "Booked. Conference Room B is reserved for tomorrow (2026-05-29) 14:00\u201315:00 UTC for your standup. Booking ID: BK-0001.",
+  "final_text_plus_reasoning": "Booked. Conference Room B is reserved for tomorrow (2026-05-29) 14:00\u201315:00 UTC for your standup. Booking ID: BK-0001.",
+  "metrics": {
+    "accepted_tokens": 176.0,
+    "draft_tokens": 392.0,
+    "drafts": 56.0
+  },
+  "passed": true,
+  "check_detail": "booked Conference Room B 2026-05-29T14:00:00Z..2026-05-29T15:00:00Z"
+}

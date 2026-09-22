@@ -1,0 +1,13 @@
+{
+  "model": "smolagent",
+  "endpoint": "http://localhost:12468/v1",
+  "benchmark": "HumanEval",
+  "samples": 10,
+  "duration_s": 172.0,
+  "scores": {
+    "accuracy": 0.6,
+    "stderr": 0.163
+  },
+  "eval_log": "/home/sumergoconicio/Documents/Code/EvalsBench/logs/20260910_smolagent_humaneval/2026-09-10T20-19-16-00-00_humaneval_dCVhR9TAFpoqYZZUy6DRBT.eval",
+  "timestamp": "2026-09-10 22:22:44"
+}

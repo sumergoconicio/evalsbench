@@ -1,0 +1,66 @@
+{
+  "id": 7,
+  "area": "Scheduling",
+  "prompt": "Is Conference Room B available tomorrow from 14:00 to 15:00 UTC?",
+  "steps": [
+    {
+      "round": 1,
+      "wall": 2.0887754359282553,
+      "ttft": 2.088642539922148,
+      "usage": {
+        "prompt_tokens": 1431,
+        "total_tokens": 1521,
+        "completion_tokens": 90,
+        "prompt_tokens_details": null,
+        "reasoning_tokens": 0
+      },
+      "content": null,
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "call_6b45457806a84beca3d8c9fb",
+          "type": "function",
+          "function": {
+            "name": "check_availability",
+            "arguments": "{\"room\": \"Conference Room B\", \"start\": \"2026-05-29T14:00:00Z\", \"end\": \"2026-05-29T15:00:00Z\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "check_availability",
+          "args": "{\"room\": \"Conference Room B\", \"start\": \"2026-05-29T14:00:00Z\", \"end\": \"2026-05-29T15:00:00Z\"}",
+          "result": "{\"available\": true, \"room\": \"Conference Room B\", \"start\": \"2026-05-29T14:00:00Z\", \"end\": \"2026-05-29T15:00:00Z\"}"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "wall": 1.4714224808849394,
+      "ttft": 1.315648433053866,
+      "usage": {
+        "prompt_tokens": 1601,
+        "total_tokens": 1650,
+        "completion_tokens": 49,
+        "prompt_tokens_details": null,
+        "reasoning_tokens": 0
+      },
+      "content": "Yes \u2014 Conference Room B is available tomorrow (Fri, May 29, 2026) from 14:00 to 15:00 UTC. Would you like me to book it for you?",
+      "reasoning_content": null,
+      "tool_calls": null,
+      "finish": null
+    }
+  ],
+  "rounds": 2,
+  "maxed_out": false,
+  "final_text": "Yes \u2014 Conference Room B is available tomorrow (Fri, May 29, 2026) from 14:00 to 15:00 UTC. Would you like me to book it for you?",
+  "final_text_plus_reasoning": "Yes \u2014 Conference Room B is available tomorrow (Fri, May 29, 2026) from 14:00 to 15:00 UTC. Would you like me to book it for you?",
+  "metrics": {
+    "accepted_tokens": 0,
+    "draft_tokens": 0,
+    "drafts": 0
+  },
+  "passed": true,
+  "check_detail": "called check_availability: True; text: Yes \u2014 Conference Room B is available tomorrow (Fri, May 29, 2026) from 14:00 to 15:00 UTC. Would you like me to book it "
+}

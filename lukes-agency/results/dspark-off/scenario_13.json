@@ -1,0 +1,32 @@
+{
+  "id": 13,
+  "area": "Restraint",
+  "prompt": "Thanks, that helps!",
+  "steps": [
+    {
+      "round": 1,
+      "wall": 1.942471102986019,
+      "ttft": 1.7816602810053155,
+      "usage": {
+        "prompt_tokens": 1326,
+        "total_tokens": 1361,
+        "completion_tokens": 35
+      },
+      "content": "You're welcome! If you need anything else \u2014 like booking a room, looking up a colleague, converting currency, or filing a support ticket \u2014 just let me know.",
+      "reasoning_content": null,
+      "tool_calls": null,
+      "finish": null
+    }
+  ],
+  "rounds": 1,
+  "maxed_out": false,
+  "final_text": "You're welcome! If you need anything else \u2014 like booking a room, looking up a colleague, converting currency, or filing a support ticket \u2014 just let me know.",
+  "final_text_plus_reasoning": "You're welcome! If you need anything else \u2014 like booking a room, looking up a colleague, converting currency, or filing a support ticket \u2014 just let me know.",
+  "metrics": {
+    "accepted_tokens": 18.0,
+    "draft_tokens": 126.0,
+    "drafts": 18.0
+  },
+  "passed": true,
+  "check_detail": "tool calls: 0; text: You're welcome! If you need anything else \u2014 like booking a room, looking up a colleague, converting "
+}

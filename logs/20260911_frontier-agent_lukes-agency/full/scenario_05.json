@@ -1,0 +1,101 @@
+{
+  "id": 5,
+  "area": "Scheduling",
+  "prompt": "Book Conference Room B tomorrow 14:00-15:00 UTC for a standup.",
+  "steps": [
+    {
+      "round": 1,
+      "wall": 4.720375149001484,
+      "ttft": 0.6707404140033759,
+      "usage": {
+        "completion_tokens": 264,
+        "completion_tokens_details": {
+          "reasoning_tokens": 172
+        },
+        "prompt_tokens": 1509,
+        "total_tokens": 1773
+      },
+      "content": "Let me first check that Conference Room B is available during that time slot, then book it.\n",
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "chatcmpl-tool-8b7fda2fc1dfdfc1",
+          "type": "function",
+          "function": {
+            "name": "check_availability",
+            "arguments": "{\"room\": \"Conference Room B\", \"start\": \"2026-05-29T14:00:00Z\", \"end\": \"2026-05-29T15:00:00Z\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "check_availability",
+          "args": "{\"room\": \"Conference Room B\", \"start\": \"2026-05-29T14:00:00Z\", \"end\": \"2026-05-29T15:00:00Z\"}",
+          "result": "{\"available\": true, \"room\": \"Conference Room B\", \"start\": \"2026-05-29T14:00:00Z\", \"end\": \"2026-05-29T15:00:00Z\"}"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "wall": 2.0209699909974006,
+      "ttft": 0.6786154500005068,
+      "usage": {
+        "completion_tokens": 99,
+        "completion_tokens_details": {
+          "reasoning_tokens": 11
+        },
+        "prompt_tokens": 1684,
+        "total_tokens": 1783
+      },
+      "content": "Conference Room B is available. Booking it now for your standup.\n",
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "chatcmpl-tool-bbbbb5ef4b9b78ff",
+          "type": "function",
+          "function": {
+            "name": "book_meeting_room",
+            "arguments": "{\"room\": \"Conference Room B\", \"start\": \"2026-05-29T14:00:00Z\", \"end\": \"2026-05-29T15:00:00Z\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "book_meeting_room",
+          "args": "{\"room\": \"Conference Room B\", \"start\": \"2026-05-29T14:00:00Z\", \"end\": \"2026-05-29T15:00:00Z\"}",
+          "result": "{\"status\": \"booked\", \"room\": \"Conference Room B\", \"start\": \"2026-05-29T14:00:00Z\", \"end\": \"2026-05-29T15:00:00Z\", \"booking_id\": \"BK-0001\"}"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "wall": 2.224410964998242,
+      "ttft": 0.6892561720014783,
+      "usage": {
+        "completion_tokens": 110,
+        "completion_tokens_details": {
+          "reasoning_tokens": 18
+        },
+        "prompt_tokens": 1869,
+        "total_tokens": 1979
+      },
+      "content": "Done! Here's the booking confirmation:\n\n- **Room:** Conference Room B\n- **Date/Time:** Tomorrow (May 29, 2026) \u2014 14:00\u201315:00 UTC\n- **Purpose:** Standup\n- **Booking ID:** BK-0001\n\nThe room was available and is now reserved. Let me know if you need anything else!",
+      "reasoning_content": null,
+      "tool_calls": null,
+      "finish": null
+    }
+  ],
+  "rounds": 3,
+  "maxed_out": false,
+  "final_text": "Done! Here's the booking confirmation:\n\n- **Room:** Conference Room B\n- **Date/Time:** Tomorrow (May 29, 2026) \u2014 14:00\u201315:00 UTC\n- **Purpose:** Standup\n- **Booking ID:** BK-0001\n\nThe room was available and is now reserved. Let me know if you need anything else!",
+  "final_text_plus_reasoning": "Let me first check that Conference Room B is available during that time slot, then book it.\n\nConference Room B is available. Booking it now for your standup.\n\nDone! Here's the booking confirmation:\n\n- **Room:** Conference Room B\n- **Date/Time:** Tomorrow (May 29, 2026) \u2014 14:00\u201315:00 UTC\n- **Purpose:** Standup\n- **Booking ID:** BK-0001\n\nThe room was available and is now reserved. Let me know if you need anything else!",
+  "metrics": {
+    "accepted_tokens": 0,
+    "draft_tokens": 0,
+    "drafts": 0
+  },
+  "passed": true,
+  "check_detail": "booked Conference Room B 2026-05-29T14:00:00Z..2026-05-29T15:00:00Z"
+}

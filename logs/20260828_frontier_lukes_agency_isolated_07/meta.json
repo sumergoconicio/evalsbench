@@ -1,0 +1,13 @@
+{
+  "tag": "20260828_frontier_lukes_agency_isolated_07",
+  "mode": "off",
+  "chat_template_kwargs": {
+    "enable_thinking": false
+  },
+  "url": "http://192.168.178.48:1234/v1",
+  "model": "frontier",
+  "started": "2026-08-28T04:50:26.810503+00:00",
+  "sandbox_clock": "2026-05-28T10:00:00Z",
+  "tomorrow": "2026-05-29",
+  "this_friday": "2026-05-29"
+}

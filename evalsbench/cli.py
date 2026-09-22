@@ -5,23 +5,189 @@ Interactive guided check-in and argument-driven command line interface for Evals
 import argparse
 import sys
 from pathlib import Path
-from typing import List, Tuple
+from typing import List, Optional, Sequence, Tuple
 
 from .config import auto_probe_local_endpoint, load_chai_env
-from .registry import BENCHMARK_REGISTRY, PRESET_SUITES
+from .registry import BENCHMARK_REGISTRY, PRESET_SUITES, DIFFICULTY_PROFILES
 from .runner import EvalsRunner
+
+
+# ---------------------------------------------------------------------------
+# EDS subcommands (validate-spec / new-eval)
+# ---------------------------------------------------------------------------
+# When ``sys.argv[1]`` matches one of these tokens, the CLI short-circuits
+# before the legacy flag parser and the guided check-in run. All other
+# invocations preserve the original behavior of this module.
+
+
+_EDS_SUBCOMMANDS: Tuple[str, ...] = ("validate-spec", "new-eval")
+
+
+def _build_validate_spec_parser() -> argparse.ArgumentParser:
+    """Construct the argparse used by ``python -m evalsbench validate-spec``."""
+    parser = argparse.ArgumentParser(
+        prog="evalsbench validate-spec",
+        description="Lint one or more EDS .eds.md episode specifications.",
+    )
+    parser.add_argument(
+        "PATH",
+        nargs="?",
+        default="evalsbench/eds/specs",
+        help="Spec file or directory tree to lint (defaults to evalsbench/eds/specs).",
+    )
+    parser.add_argument(
+        "--strict-primitives",
+        action="store_true",
+        help="Treat unknown parameter types as errors instead of warnings.",
+    )
+    parser.add_argument(
+        "--no-color",
+        action="store_true",
+        help="Disable ANSI color escapes in the printed report.",
+    )
+    return parser
+
+
+def _build_new_eval_parser() -> argparse.ArgumentParser:
+    """Construct the argparse used by ``python -m evalsbench new-eval``."""
+    parser = argparse.ArgumentParser(
+        prog="evalsbench new-eval",
+        description="Scaffold a new EDS evaluation domain package on disk.",
+    )
+    parser.add_argument(
+        "--domain",
+        required=True,
+        help="Lowercase kebab/snake domain name (e.g. 'minicorp-agency').",
+    )
+    parser.add_argument(
+        "--base-dir",
+        default=None,
+        help="Optional destination directory; defaults to evalsbench/eds/domains.",
+    )
+    parser.add_argument(
+        "--overwrite",
+        action="store_true",
+        help="Replace an existing empty destination directory without raising.",
+    )
+    return parser
+
+
+def _handle_validate_spec(argv: Sequence[str]) -> int:
+    """Dispatch the ``validate-spec`` subcommand. Returns the POSIX exit code.
+
+    Parameters:
+        argv: Tokens after the ``validate-spec`` positional on
+            ``sys.argv`` (e.g. ``["path/to/spec.eds.md"]``).
+
+    Returns:
+        ``0`` when the linter found no errors, ``1`` otherwise.
+    """
+    from .eds.linter import lint_spec, render_report
+
+    args = _build_validate_spec_parser().parse_args(list(argv))
+    target = Path(args.PATH).resolve()
+    use_color = (not args.no_color) and sys.stdout.isatty()
+    try:
+        report = lint_spec(target, strict_primitives=args.strict_primitives)
+    except FileNotFoundError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 1
+    except ValueError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 1
+    print(render_report(report, use_color=use_color))
+    return report.exit_code()
+
+
+def _handle_new_eval(argv: Sequence[str]) -> int:
+    """Dispatch the ``new-eval`` subcommand. Returns the POSIX exit code.
+
+    Parameters:
+        argv: Tokens after the ``new-eval`` positional on ``sys.argv``.
+
+    Returns:
+        ``0`` on successful scaffold, ``1`` when the supplied name fails
+        validation or the destination already houses non-empty contents.
+    """
+    from .eds.scaffold import (
+        InvalidDomainName,
+        scaffold_domain,
+        validate_domain_name,
+    )
+
+    args = _build_new_eval_parser().parse_args(list(argv))
+    try:
+        validate_domain_name(args.domain)
+        base_path = Path(args.base_dir).resolve() if args.base_dir else None
+        paths = scaffold_domain(args.domain, base_dir=base_path, overwrite=args.overwrite)
+    except InvalidDomainName as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 1
+    except FileExistsError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 1
+    print(f"✅ Scaffolded EDS domain '{args.domain}' at {paths.package_dir}")
+    print(f"   - {paths.init_file}")
+    print(f"   - {paths.fixtures_file}")
+    print(f"   - {paths.tools_file}")
+    print(f"   - {paths.example_spec}")
+    print("\nNext steps:")
+    print(f"   1. Edit {paths.fixtures_file.name} and {paths.tools_file.name}.")
+    print(f"   2. Replace placeholders inside {paths.example_spec.name}.")
+    print("   3. Re-run: python -m evalsbench validate-spec "
+          f"{paths.package_dir}/specs")
+    return 0
+
+
+def _maybe_dispatch_subcommand(argv: Sequence[str]) -> Optional[int]:
+    """Return an exit code when ``argv[0]`` names an EDS subcommand; else None.
+
+    The mint CLI treats ``validate-spec`` and ``new-eval`` as the only two
+    positional subcommands; anything else (including bare flags) falls
+    through to the original argparse-powered evaluation flow.
+
+    Parameters:
+        argv: The full ``sys.argv[1:]`` slice.
+
+    Returns:
+        The exit code of the subcommand handler, or ``None`` when no
+        subcommand was matched (the caller should continue with the
+        legacy argparse path).
+    """
+    if not argv:
+        return None
+    head = argv[0]
+    if head not in _EDS_SUBCOMMANDS:
+        return None
+    sub_argv = list(argv[1:])
+    if head == "validate-spec":
+        return _handle_validate_spec(sub_argv)
+    if head == "new-eval":
+        return _handle_new_eval(sub_argv)
+    return None  # pragma: no cover - defensive
 
 
 def parse_args():
     parser = argparse.ArgumentParser(
         description="EvalsBench: Unified Model Evaluation & Profiling Framework",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        epilog=(
+            "Subcommands:\n"
+            "  validate-spec   Lint EDS episode specifications (.eds.md) under a path or tree.\n"
+            "  new-eval        Scaffold a new EDS evaluation domain package on disk.\n"
+            "\n"
+            "Examples:\n"
+            "  python -m evalsbench validate-spec evalsbench/eds/specs\n"
+            "  python -m evalsbench new-eval --domain my-mini-agency\n"
+            "  python -m evalsbench --model master-lite --benchmarks ifeval,humaneval --limit 25\n"
+        ),
     )
     parser.add_argument("--model", "-m", type=str, default=None, help="Model alias or name (e.g. nemotron3.5-lightning)")
     parser.add_argument("--endpoint", "-e", type=str, default=None, help="OpenAI-compatible base URL (e.g. http://localhost:2468/v1)")
     parser.add_argument("--api-key", "-k", type=str, default=None, help="API key (defaults to dummy for local or reads ~/chai/.env)")
     parser.add_argument("--suite", "-s", type=str, choices=list(PRESET_SUITES.keys()), default=None, help="Preconfigured benchmark suite")
     parser.add_argument("--benchmarks", "-b", type=str, default=None, help="Comma-separated list of individual benchmarks to run")
+    parser.add_argument("--difficulty-profile", "-d", type=str, choices=list(DIFFICULTY_PROFILES.keys()), default=None, help="Difficulty stratification profile (gatekeeper: 50/40/10, echelon: 10/50/40)")
     parser.add_argument("--limit", "-l", type=int, default=None, help="Number of samples to evaluate per benchmark")
     parser.add_argument("--max-connections", "-c", type=int, default=None, help="Concurrent parallel connection slots")
     parser.add_argument("--skip-preflight", action="store_true", help="Skip 1-sample preflight validation gate")
@@ -141,6 +307,14 @@ def guided_checkin(
 
 
 def main():
+    # EDS subcommand short-circuit (validate-spec / new-eval). When the
+    # first positional token names an EDS subcommand, dispatch and exit
+    # immediately; otherwise fall through to the legacy evaluation flow.
+    subcommand_exit = _maybe_dispatch_subcommand(sys.argv[1:])
+    if subcommand_exit is not None:
+        sys.exit(subcommand_exit)
+        return  # pragma: no cover - sys.exit terminates the process
+
     args = parse_args()
 
     endpoint = args.endpoint
@@ -187,6 +361,7 @@ def main():
         api_key=api_key,
         max_connections=slots,
         chai_sync=not args.no_chai_sync,
+        difficulty_profile=args.difficulty_profile,
     )
 
     print(f"\n🎯 Launching EvalsBench Suite for [{model}] across {len(tasks_to_run)} benchmarks:")

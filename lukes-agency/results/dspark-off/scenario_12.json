@@ -1,0 +1,62 @@
+{
+  "id": 12,
+  "area": "Currency",
+  "prompt": "How much is 100 USD in JPY? Use official MiniCorp rates.",
+  "steps": [
+    {
+      "round": 1,
+      "wall": 2.086231117020361,
+      "ttft": 2.0860338360071182,
+      "usage": {
+        "prompt_tokens": 1339,
+        "total_tokens": 1395,
+        "completion_tokens": 56
+      },
+      "content": null,
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "chatcmpl-tool-8d55c0ab00e950db",
+          "type": "function",
+          "function": {
+            "name": "convert_currency",
+            "arguments": "{\"amount\": 100, \"from_currency\": \"USD\", \"to_currency\": \"JPY\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "convert_currency",
+          "args": "{\"amount\": 100, \"from_currency\": \"USD\", \"to_currency\": \"JPY\"}",
+          "result": "{\"amount\": 15000.0, \"currency\": \"JPY\", \"rate_used\": 150.0}"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "wall": 1.2020553179900162,
+      "ttft": 1.2018691250123084,
+      "usage": {
+        "prompt_tokens": 1442,
+        "total_tokens": 1477,
+        "completion_tokens": 35
+      },
+      "content": "100 USD = **15,000 JPY** (at the official MiniCorp rate of 150.0 JPY per USD).",
+      "reasoning_content": null,
+      "tool_calls": null,
+      "finish": null
+    }
+  ],
+  "rounds": 2,
+  "maxed_out": false,
+  "final_text": "100 USD = **15,000 JPY** (at the official MiniCorp rate of 150.0 JPY per USD).",
+  "final_text_plus_reasoning": "100 USD = **15,000 JPY** (at the official MiniCorp rate of 150.0 JPY per USD).",
+  "metrics": {
+    "accepted_tokens": 63.0,
+    "draft_tokens": 210.0,
+    "drafts": 30.0
+  },
+  "passed": true,
+  "check_detail": "convert 100.0 USD->JPY = 15000.0"
+}

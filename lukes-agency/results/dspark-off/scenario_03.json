@@ -1,0 +1,62 @@
+{
+  "id": 3,
+  "area": "Lookup",
+  "prompt": "How many people are listed in the Engineering department?",
+  "steps": [
+    {
+      "round": 1,
+      "wall": 1.2430672460468486,
+      "ttft": 1.2428955330397002,
+      "usage": {
+        "prompt_tokens": 1331,
+        "total_tokens": 1358,
+        "completion_tokens": 27
+      },
+      "content": null,
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "chatcmpl-tool-a90c9c1c3c371c51",
+          "type": "function",
+          "function": {
+            "name": "directory_search",
+            "arguments": "{\"department\": \"Engineering\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "directory_search",
+          "args": "{\"department\": \"Engineering\"}",
+          "result": "{\"employees\": [\"Alice Chen (employee id E001, Engineer, department Engineering, team Eng Core, status Active)\", \"Dana Smith (employee id E004, Head of Engineering, department Engineering, team Eng Core, status Active)\", \"Frank Wu (employee id E006, Engineer, department Engineering, team Eng Core, status Active)\"], \"count\": 3}"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "wall": 1.5495404709945433,
+      "ttft": 1.5493891430087388,
+      "usage": {
+        "prompt_tokens": 1457,
+        "total_tokens": 1533,
+        "completion_tokens": 76
+      },
+      "content": "There are **3 people** listed in the Engineering department:\n\n1. **Alice Chen** (E001) \u2013 Engineer, Eng Core, Active\n2. **Dana Smith** (E004) \u2013 Head of Engineering, Eng Core, Active\n3. **Frank Wu** (E006) \u2013 Engineer, Eng Core, Active",
+      "reasoning_content": null,
+      "tool_calls": null,
+      "finish": null
+    }
+  ],
+  "rounds": 2,
+  "maxed_out": false,
+  "final_text": "There are **3 people** listed in the Engineering department:\n\n1. **Alice Chen** (E001) \u2013 Engineer, Eng Core, Active\n2. **Dana Smith** (E004) \u2013 Head of Engineering, Eng Core, Active\n3. **Frank Wu** (E006) \u2013 Engineer, Eng Core, Active",
+  "final_text_plus_reasoning": "There are **3 people** listed in the Engineering department:\n\n1. **Alice Chen** (E001) \u2013 Engineer, Eng Core, Active\n2. **Dana Smith** (E004) \u2013 Head of Engineering, Eng Core, Active\n3. **Frank Wu** (E006) \u2013 Engineer, Eng Core, Active",
+  "metrics": {
+    "accepted_tokens": 80.0,
+    "draft_tokens": 161.0,
+    "drafts": 23.0
+  },
+  "passed": true,
+  "check_detail": "answer: There are **3 people** listed in the Engineering department:\n\n1. **Alice Chen** (E001) \u2013 Engineer, Eng Core, Active\n2. *"
+}

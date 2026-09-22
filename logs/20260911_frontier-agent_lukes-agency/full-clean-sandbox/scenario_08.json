@@ -1,0 +1,233 @@
+{
+  "id": 8,
+  "area": "Tickets",
+  "prompt": "Open a medium ticket 'Budget sign-off' for Bob Martinez's manager.",
+  "steps": [
+    {
+      "round": 1,
+      "wall": 1.9862726599967573,
+      "ttft": 0.6628638689944637,
+      "usage": {
+        "completion_tokens": 98,
+        "completion_tokens_details": {
+          "reasoning_tokens": 61
+        },
+        "prompt_tokens": 1501,
+        "total_tokens": 1599
+      },
+      "content": "I need to find Bob Martinez's record first to identify his manager, then open the ticket.\n",
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "chatcmpl-tool-981cc68c140872f2",
+          "type": "function",
+          "function": {
+            "name": "lookup_employee",
+            "arguments": "{\"name\": \"Bob Martinez\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "lookup_employee",
+          "args": "{\"name\": \"Bob Martinez\"}",
+          "result": "{\"employee\": \"Bob Martinez (employee id E002, Platform Team Lead, department Platform, team Platform, status Active)\"}"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "wall": 2.7675979279956664,
+      "ttft": 0.6484219139965717,
+      "usage": {
+        "completion_tokens": 145,
+        "completion_tokens_details": {
+          "reasoning_tokens": 130
+        },
+        "prompt_tokens": 1586,
+        "total_tokens": 1731
+      },
+      "content": null,
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "chatcmpl-tool-acde3a81144b4816",
+          "type": "function",
+          "function": {
+            "name": "directory_search",
+            "arguments": "{\"department\": \"Platform\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "directory_search",
+          "args": "{\"department\": \"Platform\"}",
+          "result": "{\"employees\": [\"Bob Martinez (employee id E002, Platform Team Lead, department Platform, team Platform, status Active)\", \"Evan Ross (employee id E005, Engineer, department Platform, team Platform, status Active)\"], \"count\": 2}"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "wall": 0.7016187340050237,
+      "ttft": 0.7015043150022393,
+      "usage": {
+        "completion_tokens": 19,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_tokens": 1677,
+        "total_tokens": 1696
+      },
+      "content": null,
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "chatcmpl-tool-b07b2a744b9e4f70",
+          "type": "function",
+          "function": {
+            "name": "lookup_employee",
+            "arguments": "{\"employee_id\": \"E005\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "lookup_employee",
+          "args": "{\"employee_id\": \"E005\"}",
+          "result": "{\"employee\": \"Evan Ross (employee id E005, Engineer, department Platform, team Platform, status Active)\"}"
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "wall": 0.6801047879998805,
+      "ttft": 0.6799895209987881,
+      "usage": {
+        "completion_tokens": 17,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_tokens": 1743,
+        "total_tokens": 1760
+      },
+      "content": null,
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "chatcmpl-tool-8dd6edb25e0178ce",
+          "type": "function",
+          "function": {
+            "name": "lookup_employee",
+            "arguments": "{\"name\": \"Evan Ross\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "lookup_employee",
+          "args": "{\"name\": \"Evan Ross\"}",
+          "result": "{\"employee\": \"Evan Ross (employee id E005, Engineer, department Platform, team Platform, status Active)\"}"
+        }
+      ]
+    },
+    {
+      "round": 5,
+      "wall": 3.971455380000407,
+      "ttft": 0.6850521489977837,
+      "usage": {
+        "completion_tokens": 215,
+        "completion_tokens_details": {
+          "reasoning_tokens": 208
+        },
+        "prompt_tokens": 1807,
+        "total_tokens": 2022
+      },
+      "content": null,
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "chatcmpl-tool-95806b2e3b6bacde",
+          "type": "function",
+          "function": {
+            "name": "directory_search",
+            "arguments": "{}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "directory_search",
+          "args": "{}",
+          "result": "{\"employees\": [\"Alice Chen (employee id E001, Engineer, department Engineering, team Eng Core, status Active)\", \"Bob Martinez (employee id E002, Platform Team Lead, department Platform, team Platform, status Active)\", \"Carol Nguyen (employee id E003, Support Lead, department Support, team Support, status Active)\", \"Dana Smith (employee id E004, Head of Engineering, department Engineering, team Eng Core, status Active)\", \"Evan Ross (employee id E005, Engineer, department Platform, team Platform, status Active)\", \"Frank Wu (employee id E006, Engineer, department Engineering, team Eng Core, status Active)\", \"Grace Lee (employee id E007, Support Agent, department Support, team Support, status Active)\", \"Henry Miller (employee id E008, Support Agent, department Support, team Support, status Active)\", \"Ivy Patel (employee id E009, Account Exec, department Sales, team Sales, status Inactive)\", \"Jack Brown (employee id E010, Counsel, department Legal, team Legal, status Active)\"], \"count\": 10}"
+        }
+      ]
+    },
+    {
+      "round": 6,
+      "wall": 0.4898651509938645,
+      "ttft": 0.48974626799463294,
+      "usage": {
+        "completion_tokens": 17,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_tokens": 2079,
+        "total_tokens": 2096
+      },
+      "content": null,
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "chatcmpl-tool-9c4207c67961d333",
+          "type": "function",
+          "function": {
+            "name": "lookup_employee",
+            "arguments": "{\"name\": \"Dana Smith\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "lookup_employee",
+          "args": "{\"name\": \"Dana Smith\"}",
+          "result": "{\"employee\": \"Dana Smith (employee id E004, Head of Engineering, department Engineering, team Eng Core, status Active)\"}"
+        }
+      ]
+    },
+    {
+      "round": 7,
+      "wall": 34.15608528500161,
+      "ttft": 0.4580311040044762,
+      "usage": {
+        "completion_tokens": 2048,
+        "completion_tokens_details": {
+          "reasoning_tokens": 2048
+        },
+        "prompt_tokens": 2146,
+        "total_tokens": 4194
+      },
+      "content": "",
+      "reasoning_content": null,
+      "tool_calls": null,
+      "finish": null
+    }
+  ],
+  "rounds": 7,
+  "maxed_out": false,
+  "final_text": "",
+  "final_text_plus_reasoning": "I need to find Bob Martinez's record first to identify his manager, then open the ticket.\n",
+  "metrics": {
+    "accepted_tokens": 0,
+    "draft_tokens": 0,
+    "drafts": 0
+  },
+  "passed": false,
+  "check_detail": "no matching ticket (want prio=medium, assignee in {'E004', 'Dana Smith'}, title~=budget sign-off); calls=['lookup_employee', 'directory_search', 'lookup_employee', 'lookup_employee', 'directory_search', 'lookup_employee']"
+}

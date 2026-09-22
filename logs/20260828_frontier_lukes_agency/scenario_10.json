@@ -1,0 +1,98 @@
+{
+  "id": 10,
+  "area": "Tickets",
+  "prompt": "Assign a medium ticket to someone on the Platform team.",
+  "steps": [
+    {
+      "round": 1,
+      "wall": 1.1140773398801684,
+      "ttft": 1.1139813079498708,
+      "usage": {
+        "prompt_tokens": 1420,
+        "total_tokens": 1460,
+        "completion_tokens": 40,
+        "prompt_tokens_details": null,
+        "reasoning_tokens": 0
+      },
+      "content": null,
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "call_532fc3977a934e5d95377f22",
+          "type": "function",
+          "function": {
+            "name": "directory_search",
+            "arguments": "{\"team\": \"Platform\", \"active_only\": true}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "directory_search",
+          "args": "{\"team\": \"Platform\", \"active_only\": true}",
+          "result": "{\"employees\": [\"Bob Martinez (employee id E002, Platform Team Lead, department Platform, team Platform, status Active)\", \"Evan Ross (employee id E005, Engineer, department Platform, team Platform, status Active)\"], \"count\": 2}"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "wall": 1.7557945069856942,
+      "ttft": 1.755677083041519,
+      "usage": {
+        "prompt_tokens": 1534,
+        "total_tokens": 1591,
+        "completion_tokens": 57,
+        "prompt_tokens_details": null,
+        "reasoning_tokens": 0
+      },
+      "content": null,
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "call_8b5b22ec4e514446aee83af5",
+          "type": "function",
+          "function": {
+            "name": "create_support_ticket",
+            "arguments": "{\"title\": \"Platform team support request\", \"priority\": \"medium\", \"assignee\": \"E002\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "create_support_ticket",
+          "args": "{\"title\": \"Platform team support request\", \"priority\": \"medium\", \"assignee\": \"E002\"}",
+          "result": "{\"status\": \"created\", \"ticket_id\": \"TCK-0001\", \"title\": \"Platform team support request\", \"priority\": \"medium\", \"assignee\": \"Bob Martinez\"}"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "wall": 1.8254654710181057,
+      "ttft": 1.0758733989205211,
+      "usage": {
+        "prompt_tokens": 1650,
+        "total_tokens": 1743,
+        "completion_tokens": 93,
+        "prompt_tokens_details": null,
+        "reasoning_tokens": 0
+      },
+      "content": "Done! I created a medium-priority ticket and assigned it to a Platform team member:\n\n- **Ticket ID:** TCK-0001\n- **Title:** Platform team support request\n- **Priority:** Medium\n- **Assignee:** Bob Martinez (E002, Platform Team Lead)\n\nIf you'd like a different title or prefer it assigned to Evan Ross (the other active Platform team member), just let me know.",
+      "reasoning_content": null,
+      "tool_calls": null,
+      "finish": null
+    }
+  ],
+  "rounds": 3,
+  "maxed_out": false,
+  "final_text": "Done! I created a medium-priority ticket and assigned it to a Platform team member:\n\n- **Ticket ID:** TCK-0001\n- **Title:** Platform team support request\n- **Priority:** Medium\n- **Assignee:** Bob Martinez (E002, Platform Team Lead)\n\nIf you'd like a different title or prefer it assigned to Evan Ross (the other active Platform team member), just let me know.",
+  "final_text_plus_reasoning": "Done! I created a medium-priority ticket and assigned it to a Platform team member:\n\n- **Ticket ID:** TCK-0001\n- **Title:** Platform team support request\n- **Priority:** Medium\n- **Assignee:** Bob Martinez (E002, Platform Team Lead)\n\nIf you'd like a different title or prefer it assigned to Evan Ross (the other active Platform team member), just let me know.",
+  "metrics": {
+    "accepted_tokens": 0,
+    "draft_tokens": 0,
+    "drafts": 0
+  },
+  "passed": true,
+  "check_detail": "ticket priority=medium assignee=E002 title=platform team support request"
+}

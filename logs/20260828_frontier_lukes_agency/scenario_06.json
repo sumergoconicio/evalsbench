@@ -1,0 +1,66 @@
+{
+  "id": 6,
+  "area": "Scheduling",
+  "prompt": "Book Room A this Friday 09:00-10:00 UTC for sprint planning.",
+  "steps": [
+    {
+      "round": 1,
+      "wall": 1.6023931428790092,
+      "ttft": 1.602283095009625,
+      "usage": {
+        "prompt_tokens": 1431,
+        "total_tokens": 1522,
+        "completion_tokens": 91,
+        "prompt_tokens_details": null,
+        "reasoning_tokens": 0
+      },
+      "content": null,
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "call_b1f8e53d46624559887c690a",
+          "type": "function",
+          "function": {
+            "name": "book_meeting_room",
+            "arguments": "{\"room\": \"Conference Room A\", \"start\": \"2026-05-29T09:00:00Z\", \"end\": \"2026-05-29T10:00:00Z\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "book_meeting_room",
+          "args": "{\"room\": \"Conference Room A\", \"start\": \"2026-05-29T09:00:00Z\", \"end\": \"2026-05-29T10:00:00Z\"}",
+          "result": "{\"status\": \"booked\", \"room\": \"Conference Room A\", \"start\": \"2026-05-29T09:00:00Z\", \"end\": \"2026-05-29T10:00:00Z\", \"booking_id\": \"BK-0002\"}"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "wall": 1.0960130949970335,
+      "ttft": 0.9226306320633739,
+      "usage": {
+        "prompt_tokens": 1616,
+        "total_tokens": 1668,
+        "completion_tokens": 52,
+        "prompt_tokens_details": null,
+        "reasoning_tokens": 0
+      },
+      "content": "Booked! Conference Room A is reserved for sprint planning this Friday, May 29, 2026, from 09:00 to 10:00 UTC (booking ID: BK-0002).",
+      "reasoning_content": null,
+      "tool_calls": null,
+      "finish": null
+    }
+  ],
+  "rounds": 2,
+  "maxed_out": false,
+  "final_text": "Booked! Conference Room A is reserved for sprint planning this Friday, May 29, 2026, from 09:00 to 10:00 UTC (booking ID: BK-0002).",
+  "final_text_plus_reasoning": "Booked! Conference Room A is reserved for sprint planning this Friday, May 29, 2026, from 09:00 to 10:00 UTC (booking ID: BK-0002).",
+  "metrics": {
+    "accepted_tokens": 0,
+    "draft_tokens": 0,
+    "drafts": 0
+  },
+  "passed": true,
+  "check_detail": "booked Conference Room A 2026-05-29T09:00:00Z..2026-05-29T10:00:00Z"
+}

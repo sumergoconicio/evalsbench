@@ -1,0 +1,21 @@
+{
+  "model": "nemotron3.5-lightning",
+  "endpoint": "http://localhost:2468/v1",
+  "benchmark": "IFEval",
+  "samples": 1,
+  "duration_s": 402.78220987319946,
+  "scores": {
+    "prompt_strict_acc": 1.0,
+    "prompt_strict_stderr": 0.0,
+    "prompt_loose_acc": 1.0,
+    "prompt_loose_stderr": 0.0,
+    "inst_strict_acc": 1.0,
+    "inst_strict_stderr": 0.0,
+    "inst_loose_acc": 1.0,
+    "inst_loose_stderr": 0.0,
+    "final_acc": 1.0,
+    "final_stderr": 0.0
+  },
+  "eval_log": "/home/sumergoconicio/Documents/Code/EvalsBench/logs/20260824_nemotron3.5-lightning_ifeval/2026-08-24T20-18-39-00-00_ifeval_f893GXornTjL35m9RQ3LzW.eval",
+  "timestamp": "2026-08-24 22:25:17"
+}

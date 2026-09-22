@@ -1,0 +1,66 @@
+{
+  "id": 1,
+  "area": "Lookup",
+  "prompt": "What department does Alice Chen work in?",
+  "steps": [
+    {
+      "round": 1,
+      "wall": 1.591588808922097,
+      "ttft": 1.5914670159108937,
+      "usage": {
+        "prompt_tokens": 1417,
+        "total_tokens": 1444,
+        "completion_tokens": 27,
+        "prompt_tokens_details": null,
+        "reasoning_tokens": 0
+      },
+      "content": null,
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "call_43a073a32cf646b39c1aa0db",
+          "type": "function",
+          "function": {
+            "name": "lookup_employee",
+            "arguments": "{\"name\": \"Alice Chen\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "lookup_employee",
+          "args": "{\"name\": \"Alice Chen\"}",
+          "result": "{\"employee\": \"Alice Chen (employee id E001, Engineer, department Engineering, team Eng Core, status Active)\"}"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "wall": 1.2992065958678722,
+      "ttft": 1.2991037629544735,
+      "usage": {
+        "prompt_tokens": 1488,
+        "total_tokens": 1512,
+        "completion_tokens": 24,
+        "prompt_tokens_details": null,
+        "reasoning_tokens": 0
+      },
+      "content": "Alice Chen works in the **Engineering** department (team: Eng Core). She's an Engineer and currently active.",
+      "reasoning_content": null,
+      "tool_calls": null,
+      "finish": null
+    }
+  ],
+  "rounds": 2,
+  "maxed_out": false,
+  "final_text": "Alice Chen works in the **Engineering** department (team: Eng Core). She's an Engineer and currently active.",
+  "final_text_plus_reasoning": "Alice Chen works in the **Engineering** department (team: Eng Core). She's an Engineer and currently active.",
+  "metrics": {
+    "accepted_tokens": 0,
+    "draft_tokens": 0,
+    "drafts": 0
+  },
+  "passed": true,
+  "check_detail": "text mentions Engineering: True; wiki used: False"
+}

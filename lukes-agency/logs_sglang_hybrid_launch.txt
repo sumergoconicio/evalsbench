@@ -1,0 +1,6 @@
+[Tue Aug 18 10:17:05 AM CEST 2026] Stopping any previously running SGLang instances...
+[Tue Aug 18 10:17:05 AM CEST 2026] Starting head node (Rank 0 on glytchbot-1) SPEC=dspark DSPARK_BLOCK=4 SSM_DTYPE=bfloat16 LINEAR_BACKEND=flashinfer CHAT_TEMPLATE=/model/chat_template-hybrid.jinja
+18a646a5a4fc97fa54b029efb629b17df6c15f92eae2c57e5d67a1e7f18605fb
+[Tue Aug 18 10:17:09 AM CEST 2026] Starting worker node (Rank 1 on 192.168.178.68)
+daac8c92cf36294aefb6640d871671efc165d3aa55d5aaffeaac6b1a8ee9cade
+[Tue Aug 18 10:17:10 AM CEST 2026] Both SGLang nodes started: sglang-qwen3.8-dense / sglang-qwen3.8-dense-worker (port 2468).

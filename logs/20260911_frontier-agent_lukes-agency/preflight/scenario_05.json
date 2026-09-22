@@ -1,0 +1,101 @@
+{
+  "id": 5,
+  "area": "Scheduling",
+  "prompt": "Book Conference Room B tomorrow 14:00-15:00 UTC for a standup.",
+  "steps": [
+    {
+      "round": 1,
+      "wall": 4.707583586998226,
+      "ttft": 0.6691812370045227,
+      "usage": {
+        "completion_tokens": 264,
+        "completion_tokens_details": {
+          "reasoning_tokens": 172
+        },
+        "prompt_tokens": 1509,
+        "total_tokens": 1773
+      },
+      "content": "Let me first check that Conference Room B is available during that time slot, then book it.\n",
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "chatcmpl-tool-9b9e587fcd351578",
+          "type": "function",
+          "function": {
+            "name": "check_availability",
+            "arguments": "{\"room\": \"Conference Room B\", \"start\": \"2026-05-29T14:00:00Z\", \"end\": \"2026-05-29T15:00:00Z\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "check_availability",
+          "args": "{\"room\": \"Conference Room B\", \"start\": \"2026-05-29T14:00:00Z\", \"end\": \"2026-05-29T15:00:00Z\"}",
+          "result": "{\"available\": true, \"room\": \"Conference Room B\", \"start\": \"2026-05-29T14:00:00Z\", \"end\": \"2026-05-29T15:00:00Z\"}"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "wall": 2.0218322860018816,
+      "ttft": 0.68564841200714,
+      "usage": {
+        "completion_tokens": 99,
+        "completion_tokens_details": {
+          "reasoning_tokens": 11
+        },
+        "prompt_tokens": 1684,
+        "total_tokens": 1783
+      },
+      "content": "Conference Room B is available. Booking it now for your standup.\n",
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "chatcmpl-tool-99e12aec168dcf5d",
+          "type": "function",
+          "function": {
+            "name": "book_meeting_room",
+            "arguments": "{\"room\": \"Conference Room B\", \"start\": \"2026-05-29T14:00:00Z\", \"end\": \"2026-05-29T15:00:00Z\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "book_meeting_room",
+          "args": "{\"room\": \"Conference Room B\", \"start\": \"2026-05-29T14:00:00Z\", \"end\": \"2026-05-29T15:00:00Z\"}",
+          "result": "{\"status\": \"booked\", \"room\": \"Conference Room B\", \"start\": \"2026-05-29T14:00:00Z\", \"end\": \"2026-05-29T15:00:00Z\", \"booking_id\": \"BK-0001\"}"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "wall": 2.090638907000539,
+      "ttft": 0.6905979930015747,
+      "usage": {
+        "completion_tokens": 102,
+        "completion_tokens_details": {
+          "reasoning_tokens": 18
+        },
+        "prompt_tokens": 1869,
+        "total_tokens": 1971
+      },
+      "content": "\u2705 **Conference Room B booked successfully!**\n\n- **Room:** Conference Room B\n- **Date:** Tomorrow (May 29, 2026)\n- **Time:** 14:00\u201315:00 UTC\n- **Purpose:** Standup\n- **Booking ID:** BK-0001\n\nYour standup is all set!",
+      "reasoning_content": null,
+      "tool_calls": null,
+      "finish": null
+    }
+  ],
+  "rounds": 3,
+  "maxed_out": false,
+  "final_text": "\u2705 **Conference Room B booked successfully!**\n\n- **Room:** Conference Room B\n- **Date:** Tomorrow (May 29, 2026)\n- **Time:** 14:00\u201315:00 UTC\n- **Purpose:** Standup\n- **Booking ID:** BK-0001\n\nYour standup is all set!",
+  "final_text_plus_reasoning": "Let me first check that Conference Room B is available during that time slot, then book it.\n\nConference Room B is available. Booking it now for your standup.\n\n\u2705 **Conference Room B booked successfully!**\n\n- **Room:** Conference Room B\n- **Date:** Tomorrow (May 29, 2026)\n- **Time:** 14:00\u201315:00 UTC\n- **Purpose:** Standup\n- **Booking ID:** BK-0001\n\nYour standup is all set!",
+  "metrics": {
+    "accepted_tokens": 0,
+    "draft_tokens": 0,
+    "drafts": 0
+  },
+  "passed": true,
+  "check_detail": "booked Conference Room B 2026-05-29T14:00:00Z..2026-05-29T15:00:00Z"
+}

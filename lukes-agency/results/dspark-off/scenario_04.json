@@ -1,0 +1,75 @@
+{
+  "id": 4,
+  "area": "Lookup",
+  "prompt": "List everyone who works in Support or Platform.",
+  "steps": [
+    {
+      "round": 1,
+      "wall": 2.095568442950025,
+      "ttft": 2.0954248589696363,
+      "usage": {
+        "prompt_tokens": 1330,
+        "total_tokens": 1384,
+        "completion_tokens": 54
+      },
+      "content": null,
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "chatcmpl-tool-9d41443c6aa1f85b",
+          "type": "function",
+          "function": {
+            "name": "directory_search",
+            "arguments": "{\"department\": \"Support\"}"
+          }
+        },
+        {
+          "id": "chatcmpl-tool-a2f7365e2dd78833",
+          "type": "function",
+          "function": {
+            "name": "directory_search",
+            "arguments": "{\"department\": \"Platform\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "directory_search",
+          "args": "{\"department\": \"Support\"}",
+          "result": "{\"employees\": [\"Carol Nguyen (employee id E003, Support Lead, department Support, team Support, status Active)\", \"Grace Lee (employee id E007, Support Agent, department Support, team Support, status Active)\", \"Henry Miller (employee id E008, Support Agent, department Support, team Support, status Active)\"], \"count\": 3}"
+        },
+        {
+          "name": "directory_search",
+          "args": "{\"department\": \"Platform\"}",
+          "result": "{\"employees\": [\"Bob Martinez (employee id E002, Platform Team Lead, department Platform, team Platform, status Active)\", \"Evan Ross (employee id E005, Engineer, department Platform, team Platform, status Active)\"], \"count\": 2}"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "wall": 2.002010293013882,
+      "ttft": 1.8386908390093595,
+      "usage": {
+        "prompt_tokens": 1542,
+        "total_tokens": 1636,
+        "completion_tokens": 94
+      },
+      "content": "Here's everyone in Support and Platform:\n\n**Support** (3)\n- Carol Nguyen (E003) \u2014 Support Lead\n- Grace Lee (E007) \u2014 Support Agent\n- Henry Miller (E008) \u2014 Support Agent\n\n**Platform** (2)\n- Bob Martinez (E002) \u2014 Platform Team Lead\n- Evan Ross (E005) \u2014 Engineer\n\nAll five are active.",
+      "reasoning_content": null,
+      "tool_calls": null,
+      "finish": null
+    }
+  ],
+  "rounds": 2,
+  "maxed_out": false,
+  "final_text": "Here's everyone in Support and Platform:\n\n**Support** (3)\n- Carol Nguyen (E003) \u2014 Support Lead\n- Grace Lee (E007) \u2014 Support Agent\n- Henry Miller (E008) \u2014 Support Agent\n\n**Platform** (2)\n- Bob Martinez (E002) \u2014 Platform Team Lead\n- Evan Ross (E005) \u2014 Engineer\n\nAll five are active.",
+  "final_text_plus_reasoning": "Here's everyone in Support and Platform:\n\n**Support** (3)\n- Carol Nguyen (E003) \u2014 Support Lead\n- Grace Lee (E007) \u2014 Support Agent\n- Henry Miller (E008) \u2014 Support Agent\n\n**Platform** (2)\n- Bob Martinez (E002) \u2014 Platform Team Lead\n- Evan Ross (E005) \u2014 Engineer\n\nAll five are active.",
+  "metrics": {
+    "accepted_tokens": 111.0,
+    "draft_tokens": 273.0,
+    "drafts": 39.0
+  },
+  "passed": true,
+  "check_detail": "found names: ['Carol Nguyen', 'Grace Lee', 'Henry Miller', 'Bob Martinez', 'Evan Ross']"
+}

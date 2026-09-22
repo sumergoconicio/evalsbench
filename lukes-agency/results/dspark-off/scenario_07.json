@@ -1,0 +1,62 @@
+{
+  "id": 7,
+  "area": "Scheduling",
+  "prompt": "Is Conference Room B available tomorrow from 14:00 to 15:00 UTC?",
+  "steps": [
+    {
+      "round": 1,
+      "wall": 2.386865106993355,
+      "ttft": 2.3866936819977127,
+      "usage": {
+        "prompt_tokens": 1343,
+        "total_tokens": 1433,
+        "completion_tokens": 90
+      },
+      "content": null,
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "chatcmpl-tool-a5c8dcad54f30cdf",
+          "type": "function",
+          "function": {
+            "name": "check_availability",
+            "arguments": "{\"room\": \"Conference Room B\", \"start\": \"2026-05-29T14:00:00Z\", \"end\": \"2026-05-29T15:00:00Z\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "check_availability",
+          "args": "{\"room\": \"Conference Room B\", \"start\": \"2026-05-29T14:00:00Z\", \"end\": \"2026-05-29T15:00:00Z\"}",
+          "result": "{\"available\": false, \"conflict\": {\"room\": \"Conference Room B\", \"start\": \"2026-05-29T14:00:00Z\", \"end\": \"2026-05-29T15:00:00Z\"}}"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "wall": 2.688099962018896,
+      "ttft": 1.8188750609988347,
+      "usage": {
+        "prompt_tokens": 1517,
+        "total_tokens": 1599,
+        "completion_tokens": 82
+      },
+      "content": "No \u2014 Conference Room B is **not** available tomorrow (2026-05-29) from 14:00 to 15:00 UTC. There's an existing booking conflict for that time slot.\n\nWould you like me to check another room (Conference Room A or the Boardroom) for the same time, or look for a different time window?",
+      "reasoning_content": null,
+      "tool_calls": null,
+      "finish": null
+    }
+  ],
+  "rounds": 2,
+  "maxed_out": false,
+  "final_text": "No \u2014 Conference Room B is **not** available tomorrow (2026-05-29) from 14:00 to 15:00 UTC. There's an existing booking conflict for that time slot.\n\nWould you like me to check another room (Conference Room A or the Boardroom) for the same time, or look for a different time window?",
+  "final_text_plus_reasoning": "No \u2014 Conference Room B is **not** available tomorrow (2026-05-29) from 14:00 to 15:00 UTC. There's an existing booking conflict for that time slot.\n\nWould you like me to check another room (Conference Room A or the Boardroom) for the same time, or look for a different time window?",
+  "metrics": {
+    "accepted_tokens": 124.0,
+    "draft_tokens": 350.0,
+    "drafts": 50.0
+  },
+  "passed": true,
+  "check_detail": "called check_availability: True; text: No \u2014 Conference Room B is **not** available tomorrow (2026-05-29) from 14:00 to 15:00 UTC. There's an existing booking c"
+}

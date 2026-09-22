@@ -1,0 +1,14 @@
+{
+  "tag": "preflight",
+  "mode": "xhigh",
+  "chat_template_kwargs": {
+    "enable_thinking": true,
+    "reasoning_effort": "xhigh"
+  },
+  "url": "http://127.0.0.1:12468/v1",
+  "model": "frontier-agent",
+  "started": "2026-09-11T06:32:52.498120+00:00",
+  "sandbox_clock": "2026-05-28T10:00:00Z",
+  "tomorrow": "2026-05-29",
+  "this_friday": "2026-05-29"
+}

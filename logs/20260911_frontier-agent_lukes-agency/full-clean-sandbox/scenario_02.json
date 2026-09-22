@@ -1,0 +1,68 @@
+{
+  "id": 2,
+  "area": "Lookup",
+  "prompt": "List all active employees in Engineering.",
+  "steps": [
+    {
+      "round": 1,
+      "wall": 1.3626234070034116,
+      "ttft": 0.6310934480061405,
+      "usage": {
+        "completion_tokens": 61,
+        "completion_tokens_details": {
+          "reasoning_tokens": 37
+        },
+        "prompt_tokens": 1493,
+        "total_tokens": 1554
+      },
+      "content": null,
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "chatcmpl-tool-8aaed7565289bb82",
+          "type": "function",
+          "function": {
+            "name": "directory_search",
+            "arguments": "{\"department\": \"Engineering\", \"active_only\": true}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "directory_search",
+          "args": "{\"department\": \"Engineering\", \"active_only\": true}",
+          "result": "{\"employees\": [\"Alice Chen (employee id E001, Engineer, department Engineering, team Eng Core, status Active)\", \"Dana Smith (employee id E004, Head of Engineering, department Engineering, team Eng Core, status Active)\", \"Frank Wu (employee id E006, Engineer, department Engineering, team Eng Core, status Active)\"], \"count\": 3}"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "wall": 2.1754254449988366,
+      "ttft": 0.6760673040043912,
+      "usage": {
+        "completion_tokens": 108,
+        "completion_tokens_details": {
+          "reasoning_tokens": 24
+        },
+        "prompt_tokens": 1618,
+        "total_tokens": 1726
+      },
+      "content": "Here are all active employees in Engineering:\n\n1. **Alice Chen** (E001) \u2014 Engineer, Eng Core team\n2. **Dana Smith** (E004) \u2014 Head of Engineering, Eng Core team\n3. **Frank Wu** (E006) \u2014 Engineer, Eng Core team\n\nTotal: 3 active employees in the Engineering department.",
+      "reasoning_content": null,
+      "tool_calls": null,
+      "finish": null
+    }
+  ],
+  "rounds": 2,
+  "maxed_out": false,
+  "final_text": "Here are all active employees in Engineering:\n\n1. **Alice Chen** (E001) \u2014 Engineer, Eng Core team\n2. **Dana Smith** (E004) \u2014 Head of Engineering, Eng Core team\n3. **Frank Wu** (E006) \u2014 Engineer, Eng Core team\n\nTotal: 3 active employees in the Engineering department.",
+  "final_text_plus_reasoning": "Here are all active employees in Engineering:\n\n1. **Alice Chen** (E001) \u2014 Engineer, Eng Core team\n2. **Dana Smith** (E004) \u2014 Head of Engineering, Eng Core team\n3. **Frank Wu** (E006) \u2014 Engineer, Eng Core team\n\nTotal: 3 active employees in the Engineering department.",
+  "metrics": {
+    "accepted_tokens": 0,
+    "draft_tokens": 0,
+    "drafts": 0
+  },
+  "passed": true,
+  "check_detail": "names mentioned: ['Alice Chen', 'Dana Smith', 'Frank Wu']"
+}

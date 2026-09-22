@@ -1,0 +1,13 @@
+{
+  "tag": "dspark-off",
+  "mode": "off",
+  "chat_template_kwargs": {
+    "enable_thinking": false
+  },
+  "url": "http://localhost:2468/v1",
+  "model": "qwen3.8-dense",
+  "started": "2026-08-18T05:32:01.064139+00:00",
+  "sandbox_clock": "2026-05-28T10:00:00Z",
+  "tomorrow": "2026-05-29",
+  "this_friday": "2026-05-29"
+}

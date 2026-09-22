@@ -1,0 +1,68 @@
+{
+  "id": 10,
+  "area": "Tickets",
+  "prompt": "Assign a medium ticket to someone on the Platform team.",
+  "steps": [
+    {
+      "round": 1,
+      "wall": 1.5100846689965692,
+      "ttft": 0.6307525349984644,
+      "usage": {
+        "completion_tokens": 70,
+        "completion_tokens_details": {
+          "reasoning_tokens": 42
+        },
+        "prompt_tokens": 1497,
+        "total_tokens": 1567
+      },
+      "content": "Let me first look up who's on the Platform team.\n",
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "chatcmpl-tool-83e46c36dcdbf44d",
+          "type": "function",
+          "function": {
+            "name": "directory_search",
+            "arguments": "{\"team\": \"Platform\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "directory_search",
+          "args": "{\"team\": \"Platform\"}",
+          "result": "{\"employees\": [\"Bob Martinez (employee id E002, Platform Team Lead, department Platform, team Platform, status Active)\", \"Evan Ross (employee id E005, Engineer, department Platform, team Platform, status Active)\"], \"count\": 2}"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "wall": 6.255941914998402,
+      "ttft": 0.653052547997504,
+      "usage": {
+        "completion_tokens": 355,
+        "completion_tokens_details": {
+          "reasoning_tokens": 257
+        },
+        "prompt_tokens": 1602,
+        "total_tokens": 1957
+      },
+      "content": "I found two members on the Platform team:\n\n1. **Bob Martinez** (E002) \u2014 Platform Team Lead\n2. **Evan Ross** (E005) \u2014 Engineer\n\nBefore I create the ticket, I need a bit more detail: what should the ticket title be? (e.g., \"Infrastructure issue\", \"Deployment bug\", etc.) Also, do you have a preference for who should be assigned \u2014 Bob or Evan?",
+      "reasoning_content": null,
+      "tool_calls": null,
+      "finish": null
+    }
+  ],
+  "rounds": 2,
+  "maxed_out": false,
+  "final_text": "I found two members on the Platform team:\n\n1. **Bob Martinez** (E002) \u2014 Platform Team Lead\n2. **Evan Ross** (E005) \u2014 Engineer\n\nBefore I create the ticket, I need a bit more detail: what should the ticket title be? (e.g., \"Infrastructure issue\", \"Deployment bug\", etc.) Also, do you have a preference for who should be assigned \u2014 Bob or Evan?",
+  "final_text_plus_reasoning": "Let me first look up who's on the Platform team.\n\nI found two members on the Platform team:\n\n1. **Bob Martinez** (E002) \u2014 Platform Team Lead\n2. **Evan Ross** (E005) \u2014 Engineer\n\nBefore I create the ticket, I need a bit more detail: what should the ticket title be? (e.g., \"Infrastructure issue\", \"Deployment bug\", etc.) Also, do you have a preference for who should be assigned \u2014 Bob or Evan?",
+  "metrics": {
+    "accepted_tokens": 0,
+    "draft_tokens": 0,
+    "drafts": 0
+  },
+  "passed": false,
+  "check_detail": "no matching ticket (want prio=medium, assignee in {'Evan Ross', 'E002', 'E005', 'Bob Martinez'}, title~=None); calls=['directory_search']"
+}

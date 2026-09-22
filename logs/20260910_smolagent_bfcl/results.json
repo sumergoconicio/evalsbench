@@ -1,0 +1,13 @@
+{
+  "model": "smolagent",
+  "endpoint": "http://localhost:2468/v1",
+  "benchmark": "BFCL",
+  "samples": 100,
+  "duration_s": 11.3300142288208,
+  "scores": {
+    "\u2502": 404.0,
+    "Python": 3.0
+  },
+  "eval_log": "/home/sumergoconicio/Documents/Code/EvalsBench/logs/20260910_smolagent_bfcl/2026-09-10T19-26-10-00-00_bfcl_eJZd9TjdRamVwbL47ZNBVh.eval",
+  "timestamp": "2026-09-10 21:26:19"
+}

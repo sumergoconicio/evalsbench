@@ -1,0 +1,13 @@
+{
+  "model": "master-lite",
+  "endpoint": "http://localhost:12468/v1",
+  "benchmark": "HumanEval",
+  "samples": 25,
+  "duration_s": 436.3926827907562,
+  "scores": {
+    "accuracy": 0.84,
+    "stderr": 0.075
+  },
+  "eval_log": "/home/sumergoconicio/Documents/Code/EvalsBench/logs/20260922_master-lite_humaneval/2026-09-22T10-01-10-00-00_humaneval_Q89Mn3BxtFebBhBvzHUJPu.eval",
+  "timestamp": "2026-09-22 12:08:22"
+}

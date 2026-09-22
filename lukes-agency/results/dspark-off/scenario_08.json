@@ -1,0 +1,258 @@
+{
+  "id": 8,
+  "area": "Tickets",
+  "prompt": "Open a medium ticket 'Budget sign-off' for Bob Martinez's manager.",
+  "steps": [
+    {
+      "round": 1,
+      "wall": 1.3740639840252697,
+      "ttft": 1.3739232000079937,
+      "usage": {
+        "prompt_tokens": 1336,
+        "total_tokens": 1363,
+        "completion_tokens": 27
+      },
+      "content": null,
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "chatcmpl-tool-a64ca920e22645ac",
+          "type": "function",
+          "function": {
+            "name": "lookup_employee",
+            "arguments": "{\"name\": \"Bob Martinez\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "lookup_employee",
+          "args": "{\"name\": \"Bob Martinez\"}",
+          "result": "{\"employee\": \"Bob Martinez (employee id E002, Platform Team Lead, department Platform, team Platform, status Active)\"}"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "wall": 1.577053954009898,
+      "ttft": 1.5769903539912775,
+      "usage": {
+        "prompt_tokens": 1408,
+        "total_tokens": 1439,
+        "completion_tokens": 31
+      },
+      "content": null,
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "chatcmpl-tool-9bdf613123bcd52f",
+          "type": "function",
+          "function": {
+            "name": "lookup_employee",
+            "arguments": "{\"employee_id\": \"E002\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "lookup_employee",
+          "args": "{\"employee_id\": \"E002\"}",
+          "result": "{\"employee\": \"Bob Martinez (employee id E002, Platform Team Lead, department Platform, team Platform, status Active)\"}"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "wall": 1.4917416870011948,
+      "ttft": 1.4916035429923795,
+      "usage": {
+        "prompt_tokens": 1484,
+        "total_tokens": 1511,
+        "completion_tokens": 27
+      },
+      "content": null,
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "chatcmpl-tool-bdc3e7af67f502d9",
+          "type": "function",
+          "function": {
+            "name": "directory_search",
+            "arguments": "{\"team\": \"Platform\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "directory_search",
+          "args": "{\"team\": \"Platform\"}",
+          "result": "{\"employees\": [\"Bob Martinez (employee id E002, Platform Team Lead, department Platform, team Platform, status Active)\", \"Evan Ross (employee id E005, Engineer, department Platform, team Platform, status Active)\"], \"count\": 2}"
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "wall": 1.1673989620176144,
+      "ttft": 1.167203490040265,
+      "usage": {
+        "prompt_tokens": 1585,
+        "total_tokens": 1612,
+        "completion_tokens": 27
+      },
+      "content": null,
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "chatcmpl-tool-87af44df93c9583a",
+          "type": "function",
+          "function": {
+            "name": "directory_search",
+            "arguments": "{\"department\": \"Platform\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "directory_search",
+          "args": "{\"department\": \"Platform\"}",
+          "result": "{\"employees\": [\"Bob Martinez (employee id E002, Platform Team Lead, department Platform, team Platform, status Active)\", \"Evan Ross (employee id E005, Engineer, department Platform, team Platform, status Active)\"], \"count\": 2}"
+        }
+      ]
+    },
+    {
+      "round": 5,
+      "wall": 1.4342251929920167,
+      "ttft": 1.4340645999764092,
+      "usage": {
+        "prompt_tokens": 1686,
+        "total_tokens": 1714,
+        "completion_tokens": 28
+      },
+      "content": null,
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "chatcmpl-tool-82b735cb4865825c",
+          "type": "function",
+          "function": {
+            "name": "lookup_employee",
+            "arguments": "{\"name\": \"Evan Ross\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "lookup_employee",
+          "args": "{\"name\": \"Evan Ross\"}",
+          "result": "{\"employee\": \"Evan Ross (employee id E005, Engineer, department Platform, team Platform, status Active)\"}"
+        }
+      ]
+    },
+    {
+      "round": 6,
+      "wall": 1.461180130019784,
+      "ttft": 1.4610673299757764,
+      "usage": {
+        "prompt_tokens": 1758,
+        "total_tokens": 1786,
+        "completion_tokens": 28
+      },
+      "content": null,
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "chatcmpl-tool-8feef37f2f51476d",
+          "type": "function",
+          "function": {
+            "name": "directory_search",
+            "arguments": "{\"active_only\": true}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "directory_search",
+          "args": "{\"active_only\": true}",
+          "result": "{\"employees\": [\"Alice Chen (employee id E001, Engineer, department Engineering, team Eng Core, status Active)\", \"Bob Martinez (employee id E002, Platform Team Lead, department Platform, team Platform, status Active)\", \"Carol Nguyen (employee id E003, Support Lead, department Support, team Support, status Active)\", \"Dana Smith (employee id E004, Head of Engineering, department Engineering, team Eng Core, status Active)\", \"Evan Ross (employee id E005, Engineer, department Platform, team Platform, status Active)\", \"Frank Wu (employee id E006, Engineer, department Engineering, team Eng Core, status Active)\", \"Grace Lee (employee id E007, Support Agent, department Support, team Support, status Active)\", \"Henry Miller (employee id E008, Support Agent, department Support, team Support, status Active)\", \"Jack Brown (employee id E010, Counsel, department Legal, team Legal, status Active)\"], \"count\": 9}"
+        }
+      ]
+    },
+    {
+      "round": 7,
+      "wall": 1.4040912850177847,
+      "ttft": 1.403996996989008,
+      "usage": {
+        "prompt_tokens": 2023,
+        "total_tokens": 2051,
+        "completion_tokens": 28
+      },
+      "content": null,
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "chatcmpl-tool-ad0ef0773ad92a08",
+          "type": "function",
+          "function": {
+            "name": "lookup_employee",
+            "arguments": "{\"name\": \"Dana Smith\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "lookup_employee",
+          "args": "{\"name\": \"Dana Smith\"}",
+          "result": "{\"employee\": \"Dana Smith (employee id E004, Head of Engineering, department Engineering, team Eng Core, status Active)\"}"
+        }
+      ]
+    },
+    {
+      "round": 8,
+      "wall": 1.433063828968443,
+      "ttft": 1.432883443951141,
+      "usage": {
+        "prompt_tokens": 2098,
+        "total_tokens": 2125,
+        "completion_tokens": 27
+      },
+      "content": null,
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "chatcmpl-tool-b86cf652043d914b",
+          "type": "function",
+          "function": {
+            "name": "lookup_employee",
+            "arguments": "{\"name\": \"Alice Chen\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "lookup_employee",
+          "args": "{\"name\": \"Alice Chen\"}",
+          "result": "{\"employee\": \"Alice Chen (employee id E001, Engineer, department Engineering, team Eng Core, status Active)\"}"
+        }
+      ]
+    }
+  ],
+  "rounds": 8,
+  "maxed_out": true,
+  "final_text": "",
+  "final_text_plus_reasoning": "",
+  "metrics": {
+    "accepted_tokens": 139.0,
+    "draft_tokens": 546.0,
+    "drafts": 78.0
+  },
+  "passed": false,
+  "check_detail": "no matching ticket (want prio=medium, assignee in {'Dana Smith', 'E004'}, title~=budget sign-off); calls=['lookup_employee', 'lookup_employee', 'directory_search', 'directory_search', 'lookup_employee', 'directory_search', 'lookup_employee', 'lookup_employee']"
+}

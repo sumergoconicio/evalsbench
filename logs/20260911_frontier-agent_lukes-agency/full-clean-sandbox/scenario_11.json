@@ -1,0 +1,68 @@
+{
+  "id": 11,
+  "area": "Currency",
+  "prompt": "Convert 500 EUR to USD using the official MiniCorp rate.",
+  "steps": [
+    {
+      "round": 1,
+      "wall": 1.4075998379994417,
+      "ttft": 0.6442542130025686,
+      "usage": {
+        "completion_tokens": 64,
+        "completion_tokens_details": {
+          "reasoning_tokens": 29
+        },
+        "prompt_tokens": 1501,
+        "total_tokens": 1565
+      },
+      "content": null,
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "chatcmpl-tool-b416fa9b28da6a35",
+          "type": "function",
+          "function": {
+            "name": "convert_currency",
+            "arguments": "{\"amount\": 500, \"from_currency\": \"EUR\", \"to_currency\": \"USD\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "convert_currency",
+          "args": "{\"amount\": 500, \"from_currency\": \"EUR\", \"to_currency\": \"USD\"}",
+          "result": "{\"amount\": 550.0, \"currency\": \"USD\", \"rate_used\": 1.1}"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "wall": 1.5101781530029257,
+      "ttft": 0.6809158969990676,
+      "usage": {
+        "completion_tokens": 69,
+        "completion_tokens_details": {
+          "reasoning_tokens": 33
+        },
+        "prompt_tokens": 1580,
+        "total_tokens": 1649
+      },
+      "content": "500 EUR converts to **550 USD** using the official MiniCorp rate of **1.1** (1 EUR = 1.1 USD).",
+      "reasoning_content": null,
+      "tool_calls": null,
+      "finish": null
+    }
+  ],
+  "rounds": 2,
+  "maxed_out": false,
+  "final_text": "500 EUR converts to **550 USD** using the official MiniCorp rate of **1.1** (1 EUR = 1.1 USD).",
+  "final_text_plus_reasoning": "500 EUR converts to **550 USD** using the official MiniCorp rate of **1.1** (1 EUR = 1.1 USD).",
+  "metrics": {
+    "accepted_tokens": 0,
+    "draft_tokens": 0,
+    "drafts": 0
+  },
+  "passed": true,
+  "check_detail": "convert 500.0 EUR->USD = 550.0"
+}

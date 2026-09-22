@@ -8,7 +8,7 @@ import json
 import os
 import re
 from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List, Mapping, Optional
 import yaml
 
 from .config import REPO_ROOT, LOGS_DIR, MODELS_YAML_PATH, CHAI_MODELS_DIR
@@ -327,7 +327,59 @@ def harvest_all_benchmark_scores() -> Dict[str, Dict[str, Any]]:
         except Exception:
             continue
 
+    # 4. Merge EDS tri-axis aggregates from results.eds.json (additive).
+    eds_entries = _harvest_eds_scorecards()
+    for m_name, eds_benchmarks in eds_entries.items():
+        per_model = models_scores.setdefault(m_name, {})
+        for bench_key, bench_payload in eds_benchmarks.items():
+            per_model.setdefault(bench_key, {}).update(bench_payload)
+
     return models_scores
+
+
+def _harvest_eds_scorecards() -> Dict[str, Dict[str, Any]]:
+    """Pull EDS tri-axis aggregates from every ``results.eds.json``.
+
+    Mirrors the EDS-aware exporter extension in
+    :mod:`evalsbench.exporters`. Each ``results.eds.json`` carries
+    an ``aggregates`` dict keyed by canonical EDS metric names; we
+    preserve those keys verbatim so the front-end can detect them
+    and append a dashboard tag. Non-EDS scorecard files are skipped
+    silently.
+
+    Returns:
+        Dict[str, Dict[str, Any]]: ``{model_name: {benchmark: payload}}``.
+    """
+    eds_payloads: Dict[str, Dict[str, Any]] = {}
+    for res_eds in LOGS_DIR.glob("*/results.eds.json"):
+        try:
+            with open(res_eds, "r", encoding="utf-8") as fp:
+                payload = json.load(fp)
+        except Exception:
+            continue
+        if not isinstance(payload, Mapping):
+            continue
+        if payload.get("eds_tag") != "eds_tri_axis":
+            continue
+        model_name = payload.get("model")
+        bench_name = payload.get("benchmark")
+        aggregates = payload.get("aggregates")
+        if not isinstance(model_name, str) or not isinstance(bench_name, str):
+            continue
+        if not isinstance(aggregates, Mapping):
+            continue
+        # Front-end needs an explicit tag at the benchmark entry level
+        # so it can branch into tri-axis rendering without parsing every
+        # field. Inject only if missing — never overwrite user edits.
+        per_model = eds_payloads.setdefault(model_name, {})
+        benchmark_entry = dict(aggregates)
+        benchmark_entry.setdefault("eds_tag", "eds_tri_axis")
+        # Belt and braces: the benchmark name suggests EDS even when
+        # the tag is missing; this keeps the dashboard flag stable.
+        if bench_name in {"minicorp", "eds_minicorp", "eds"}:
+            benchmark_entry["eds_tag"] = "eds_tri_axis"
+        per_model[bench_name] = benchmark_entry
+    return eds_payloads
 
 
 def rebuild_leaderboard_json() -> Path:

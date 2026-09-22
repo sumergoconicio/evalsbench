@@ -1,0 +1,92 @@
+{
+  "id": 10,
+  "area": "Tickets",
+  "prompt": "Assign a medium ticket to someone on the Platform team.",
+  "steps": [
+    {
+      "round": 1,
+      "wall": 1.4009071940090507,
+      "ttft": 1.400747240986675,
+      "usage": {
+        "prompt_tokens": 1332,
+        "total_tokens": 1359,
+        "completion_tokens": 27
+      },
+      "content": null,
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "chatcmpl-tool-aed20a032640b308",
+          "type": "function",
+          "function": {
+            "name": "directory_search",
+            "arguments": "{\"team\": \"Platform\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "directory_search",
+          "args": "{\"team\": \"Platform\"}",
+          "result": "{\"employees\": [\"Bob Martinez (employee id E002, Platform Team Lead, department Platform, team Platform, status Active)\", \"Evan Ross (employee id E005, Engineer, department Platform, team Platform, status Active)\"], \"count\": 2}"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "wall": 2.757450064003933,
+      "ttft": 2.4426048909663223,
+      "usage": {
+        "prompt_tokens": 1433,
+        "total_tokens": 1517,
+        "completion_tokens": 84
+      },
+      "content": "I found two active members on the Platform team. I'll assign the ticket to the Platform Team Lead, Bob Martinez (E002).\n\n",
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "chatcmpl-tool-ba58a57d7b440833",
+          "type": "function",
+          "function": {
+            "name": "create_support_ticket",
+            "arguments": "{\"title\": \"Medium priority ticket\", \"priority\": \"medium\", \"assignee\": \"Bob Martinez\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "create_support_ticket",
+          "args": "{\"title\": \"Medium priority ticket\", \"priority\": \"medium\", \"assignee\": \"Bob Martinez\"}",
+          "result": "{\"status\": \"created\", \"ticket_id\": \"TCK-0001\", \"title\": \"Medium priority ticket\", \"priority\": \"medium\", \"assignee\": \"Bob Martinez\"}"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "wall": 2.1552399689680897,
+      "ttft": 1.8409751819563098,
+      "usage": {
+        "prompt_tokens": 1575,
+        "total_tokens": 1646,
+        "completion_tokens": 71
+      },
+      "content": "Done. I created a medium-priority ticket (TCK-0001) and assigned it to Bob Martinez (E002), the Platform Team Lead.\n\nIf you'd like it assigned to a different Platform member (e.g., Evan Ross) or want a more specific title, let me know and I'll update it.",
+      "reasoning_content": null,
+      "tool_calls": null,
+      "finish": null
+    }
+  ],
+  "rounds": 3,
+  "maxed_out": false,
+  "final_text": "Done. I created a medium-priority ticket (TCK-0001) and assigned it to Bob Martinez (E002), the Platform Team Lead.\n\nIf you'd like it assigned to a different Platform member (e.g., Evan Ross) or want a more specific title, let me know and I'll update it.",
+  "final_text_plus_reasoning": "I found two active members on the Platform team. I'll assign the ticket to the Platform Team Lead, Bob Martinez (E002).\n\n\nDone. I created a medium-priority ticket (TCK-0001) and assigned it to Bob Martinez (E002), the Platform Team Lead.\n\nIf you'd like it assigned to a different Platform member (e.g., Evan Ross) or want a more specific title, let me know and I'll update it.",
+  "metrics": {
+    "accepted_tokens": 122.0,
+    "draft_tokens": 427.0,
+    "drafts": 61.0
+  },
+  "passed": true,
+  "check_detail": "ticket priority=medium assignee=Bob Martinez title=medium priority ticket"
+}

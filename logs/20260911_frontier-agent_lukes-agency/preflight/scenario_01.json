@@ -1,0 +1,68 @@
+{
+  "id": 1,
+  "area": "Lookup",
+  "prompt": "What department does Alice Chen work in?",
+  "steps": [
+    {
+      "round": 1,
+      "wall": 1.1857500429978245,
+      "ttft": 0.6398217039968586,
+      "usage": {
+        "completion_tokens": 50,
+        "completion_tokens_details": {
+          "reasoning_tokens": 33
+        },
+        "prompt_tokens": 1494,
+        "total_tokens": 1544
+      },
+      "content": null,
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "chatcmpl-tool-add7a45f69715628",
+          "type": "function",
+          "function": {
+            "name": "lookup_employee",
+            "arguments": "{\"name\": \"Alice Chen\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "lookup_employee",
+          "args": "{\"name\": \"Alice Chen\"}",
+          "result": "{\"employee\": \"Alice Chen (employee id E001, Engineer, department Engineering, team Eng Core, status Active)\"}"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "wall": 1.2557058599995798,
+      "ttft": 0.6442097680046572,
+      "usage": {
+        "completion_tokens": 54,
+        "completion_tokens_details": {
+          "reasoning_tokens": 28
+        },
+        "prompt_tokens": 1557,
+        "total_tokens": 1611
+      },
+      "content": "Alice Chen works in the **Engineering** department. She is an Engineer on the Eng Core team and is currently Active.",
+      "reasoning_content": null,
+      "tool_calls": null,
+      "finish": null
+    }
+  ],
+  "rounds": 2,
+  "maxed_out": false,
+  "final_text": "Alice Chen works in the **Engineering** department. She is an Engineer on the Eng Core team and is currently Active.",
+  "final_text_plus_reasoning": "Alice Chen works in the **Engineering** department. She is an Engineer on the Eng Core team and is currently Active.",
+  "metrics": {
+    "accepted_tokens": 0,
+    "draft_tokens": 0,
+    "drafts": 0
+  },
+  "passed": true,
+  "check_detail": "text mentions Engineering: True; wiki used: False"
+}

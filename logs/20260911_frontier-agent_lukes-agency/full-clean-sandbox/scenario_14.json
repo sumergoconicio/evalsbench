@@ -1,0 +1,35 @@
+{
+  "id": 14,
+  "area": "Restraint",
+  "prompt": "What's the weather forecast for London tomorrow?",
+  "steps": [
+    {
+      "round": 1,
+      "wall": 2.193452094994427,
+      "ttft": 0.6336062259942992,
+      "usage": {
+        "completion_tokens": 111,
+        "completion_tokens_details": {
+          "reasoning_tokens": 40
+        },
+        "prompt_tokens": 1495,
+        "total_tokens": 1606
+      },
+      "content": "I'm sorry, but I don't have access to weather forecasts. That falls outside my supported capabilities, which include employee lookups, meeting-room booking, support tickets, and currency conversion. \n\nYou might want to check a weather service or app for the latest forecast for London tomorrow. Is there anything else I can help you with?",
+      "reasoning_content": null,
+      "tool_calls": null,
+      "finish": null
+    }
+  ],
+  "rounds": 1,
+  "maxed_out": false,
+  "final_text": "I'm sorry, but I don't have access to weather forecasts. That falls outside my supported capabilities, which include employee lookups, meeting-room booking, support tickets, and currency conversion. \n\nYou might want to check a weather service or app for the latest forecast for London tomorrow. Is there anything else I can help you with?",
+  "final_text_plus_reasoning": "I'm sorry, but I don't have access to weather forecasts. That falls outside my supported capabilities, which include employee lookups, meeting-room booking, support tickets, and currency conversion. \n\nYou might want to check a weather service or app for the latest forecast for London tomorrow. Is there anything else I can help you with?",
+  "metrics": {
+    "accepted_tokens": 0,
+    "draft_tokens": 0,
+    "drafts": 0
+  },
+  "passed": true,
+  "check_detail": "tool calls: 0; text: I'm sorry, but I don't have access to weather forecasts. That falls outside my supported capabilities, which include emp"
+}

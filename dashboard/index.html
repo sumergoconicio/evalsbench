@@ -37,6 +37,7 @@
       <button class="nav-tab" data-filter="moe">Workhorse MoE</button>
       <button class="nav-tab" data-filter="titan">Titan (70B+)</button>
       <button class="nav-tab" data-filter="cloud">Cloud Frontier</button>
+      <button class="nav-tab" data-filter="eds" id="eds-filter-tab">🧬 EDS Tri-Axis</button>
     </nav>
 
     <!-- Main Grid -->
@@ -66,11 +67,17 @@
                 <th>Model Name</th>
                 <th>Size Class</th>
                 <th>Selected Metric</th>
-                <th>IFEval (Strict)</th>
-                <th>HumanEval (Pass@1)</th>
-                <th>IFEvalCode</th>
-                <th>AgentBench (OS)</th>
-                <th>Source Lab</th>
+                <th class="academic-col-header">IFEval (Strict)</th>
+                <th class="academic-col-header">HumanEval (Pass@1)</th>
+                <th class="academic-col-header">IFEvalCode</th>
+                <th class="academic-col-header">AgentBench (OS)</th>
+                <th class="eds-col-header" id="eds-col-functional" style="display:none;">🧬 Functional %</th>
+                <th class="eds-col-header" id="eds-col-hygiene" style="display:none;">🧬 Hygiene %</th>
+                <th class="eds-col-header" id="eds-col-safety" style="display:none;">🧬 Safety (Tot / Crit)</th>
+                <th class="eds-col-header" id="eds-col-ttft" style="display:none;">🧬 Median TTFT (s)</th>
+                <th class="eds-col-header" id="eds-col-tps" style="display:none;">🧬 Median TPS</th>
+                <th class="eds-col-header" id="eds-col-mtp" style="display:none;">🧬 MTP Accept.</th>
+                <th class="academic-col-header">Source Lab</th>
               </tr>
             </thead>
             <tbody id="leaderboard-tbody">
@@ -122,11 +129,111 @@
             <canvas id="radarCanvas"></canvas>
           </div>
         </div>
+
+        <!-- EDS Tri-Axis badges (Wave 7a). Hidden until an EDS run is rendered. -->
+        <div class="eds-triaxis-widget" id="eds-triaxis-widget" style="display:none;">
+          <h3>🧬 EDS Tri-Axis Summary</h3>
+          <div class="eds-triaxis-row">
+            <div class="eds-axis eds-axis-functional">
+              <span class="eds-axis-label">Functional</span>
+              <span class="eds-axis-bar"><span class="eds-axis-bar-fill" id="eds-bar-functional"></span></span>
+              <span class="eds-axis-val" id="eds-val-functional">—</span>
+            </div>
+            <div class="eds-axis eds-axis-hygiene">
+              <span class="eds-axis-label">Hygiene</span>
+              <span class="eds-axis-bar"><span class="eds-axis-bar-fill" id="eds-bar-hygiene"></span></span>
+              <span class="eds-axis-val" id="eds-val-hygiene">—</span>
+            </div>
+            <div class="eds-axis eds-axis-safety">
+              <span class="eds-axis-label">Safety Gate</span>
+              <span class="eds-axis-bar"><span class="eds-axis-bar-fill" id="eds-bar-safety"></span></span>
+              <span class="eds-axis-val" id="eds-val-safety">—</span>
+            </div>
+          </div>
+          <p class="eds-triaxis-note">Aggregates for the most-recent EDS (MiniCorp) run on the selected model. Numbers roll up across the local rule / oracle suite; critical violations floor the composite to <code>0.0</code> per the safety-gate invariant.</p>
+        </div>
       </section>
     </main>
   </div>
 
   <script src="data/leaderboard.js"></script>
   <script src="app.js"></script>
+  <!-- Wave 7a: EDS Tri-Axis additive styles only — does not modify style.css. -->
+  <style>
+    /* EDS-only column visibility is toggled by app.js. The header column
+       elements keep their default display; when an EDS row is in scope,
+       we show these headers via a body-level class. */
+    body.eds-mode .eds-col-header { display: table-cell !important; }
+    /* Hide academic benchmark columns when EDS mode is active so the
+       table does not become a horizontal scroll target on every refresh. */
+    body.eds-mode .academic-col-header { display: none !important; }
+    /* Tri-axis summary card */
+    .eds-triaxis-widget {
+      background: rgba(18, 24, 38, 0.65);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      border-radius: 10px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .eds-triaxis-widget h3 { font-size: 14px; color: #f3f4f6; }
+    .eds-triaxis-row { display: flex; flex-direction: column; gap: 8px; }
+    .eds-axis {
+      display: grid;
+      grid-template-columns: 110px 1fr 72px;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+    }
+    .eds-axis-label { color: #9ca3af; }
+    .eds-axis-bar {
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 4px;
+      height: 10px;
+      overflow: hidden;
+      display: block;
+    }
+    .eds-axis-bar-fill {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #06b6d4 0%, #10b981 100%);
+      transition: width 200ms ease-out;
+    }
+    .eds-axis-hygiene .eds-axis-bar-fill {
+      background: linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%);
+    }
+    .eds-axis-safety .eds-axis-bar-fill {
+      background: linear-gradient(90deg, #f59e0b 0%, #10b981 100%);
+    }
+    .eds-axis-val {
+      text-align: right;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      color: #f3f4f6;
+    }
+    .eds-triaxis-note { font-size: 11px; color: #9ca3af; line-height: 1.5; }
+    .eds-triaxis-note code {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 0 4px;
+      border-radius: 3px;
+      font-family: ui-monospace, monospace;
+    }
+    /* EDS row chrome — only applied to rows whose dataset marker is
+       'eds'. The class is set by app.js during table render. */
+    tr.eds-row { background: rgba(245, 158, 11, 0.04); }
+    tr.eds-row:hover { background: rgba(245, 158, 11, 0.08); }
+    /* Match existing model-cell styling so the new column widths do
+       not collapse the existing pipeline. */
+    td.eds-cell {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12px;
+      color: #f3f4f6;
+      text-align: right;
+      white-space: nowrap;
+    }
+    td.eds-cell-muted { color: #9ca3af; }
+76
+  </style>
 </body>
 </html>

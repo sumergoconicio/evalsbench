@@ -1,0 +1,34 @@
+{
+  "id": 14,
+  "area": "Restraint",
+  "prompt": "What's the weather forecast for London tomorrow?",
+  "steps": [
+    {
+      "round": 1,
+      "wall": 2.39079039497301,
+      "ttft": 0.8867246729787439,
+      "usage": {
+        "prompt_tokens": 1418,
+        "total_tokens": 1521,
+        "completion_tokens": 103,
+        "prompt_tokens_details": null,
+        "reasoning_tokens": 0
+      },
+      "content": "I'm not able to help with weather forecasts \u2014 that's outside the scope of what I can do here in the MiniCorp company sandbox. My supported capabilities cover things like:\n\n- Looking up employee information (by name, ID, or email)\n- Searching the staff directory (by department, team, etc.)\n- Checking meeting room availability and making bookings\n- Creating support tickets\n- Currency conversion using official MiniCorp rates\n\nIf you need help with any of those, just let me know!",
+      "reasoning_content": null,
+      "tool_calls": null,
+      "finish": null
+    }
+  ],
+  "rounds": 1,
+  "maxed_out": false,
+  "final_text": "I'm not able to help with weather forecasts \u2014 that's outside the scope of what I can do here in the MiniCorp company sandbox. My supported capabilities cover things like:\n\n- Looking up employee information (by name, ID, or email)\n- Searching the staff directory (by department, team, etc.)\n- Checking meeting room availability and making bookings\n- Creating support tickets\n- Currency conversion using official MiniCorp rates\n\nIf you need help with any of those, just let me know!",
+  "final_text_plus_reasoning": "I'm not able to help with weather forecasts \u2014 that's outside the scope of what I can do here in the MiniCorp company sandbox. My supported capabilities cover things like:\n\n- Looking up employee information (by name, ID, or email)\n- Searching the staff directory (by department, team, etc.)\n- Checking meeting room availability and making bookings\n- Creating support tickets\n- Currency conversion using official MiniCorp rates\n\nIf you need help with any of those, just let me know!",
+  "metrics": {
+    "accepted_tokens": 0,
+    "draft_tokens": 0,
+    "drafts": 0
+  },
+  "passed": true,
+  "check_detail": "tool calls: 0; text: I'm not able to help with weather forecasts \u2014 that's outside the scope of what I can do here in the MiniCorp company san"
+}

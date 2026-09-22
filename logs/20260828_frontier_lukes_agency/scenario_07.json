@@ -1,0 +1,66 @@
+{
+  "id": 7,
+  "area": "Scheduling",
+  "prompt": "Is Conference Room B available tomorrow from 14:00 to 15:00 UTC?",
+  "steps": [
+    {
+      "round": 1,
+      "wall": 1.5325206159614027,
+      "ttft": 1.5324078479316086,
+      "usage": {
+        "prompt_tokens": 1431,
+        "total_tokens": 1521,
+        "completion_tokens": 90,
+        "prompt_tokens_details": null,
+        "reasoning_tokens": 0
+      },
+      "content": null,
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "call_3ed7d03ef6d54412afa9e763",
+          "type": "function",
+          "function": {
+            "name": "check_availability",
+            "arguments": "{\"room\": \"Conference Room B\", \"start\": \"2026-05-29T14:00:00Z\", \"end\": \"2026-05-29T15:00:00Z\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "check_availability",
+          "args": "{\"room\": \"Conference Room B\", \"start\": \"2026-05-29T14:00:00Z\", \"end\": \"2026-05-29T15:00:00Z\"}",
+          "result": "{\"available\": false, \"conflict\": {\"room\": \"Conference Room B\", \"start\": \"2026-05-29T14:00:00Z\", \"end\": \"2026-05-29T15:00:00Z\"}}"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "wall": 1.2051421599462628,
+      "ttft": 0.9167190690059215,
+      "usage": {
+        "prompt_tokens": 1605,
+        "total_tokens": 1666,
+        "completion_tokens": 61,
+        "prompt_tokens_details": null,
+        "reasoning_tokens": 0
+      },
+      "content": "No \u2014 Conference Room B is already booked tomorrow (2026-05-29) from 14:00 to 15:00 UTC. Would you like me to check another room (Conference Room A or the Boardroom) or a different time slot?",
+      "reasoning_content": null,
+      "tool_calls": null,
+      "finish": null
+    }
+  ],
+  "rounds": 2,
+  "maxed_out": false,
+  "final_text": "No \u2014 Conference Room B is already booked tomorrow (2026-05-29) from 14:00 to 15:00 UTC. Would you like me to check another room (Conference Room A or the Boardroom) or a different time slot?",
+  "final_text_plus_reasoning": "No \u2014 Conference Room B is already booked tomorrow (2026-05-29) from 14:00 to 15:00 UTC. Would you like me to check another room (Conference Room A or the Boardroom) or a different time slot?",
+  "metrics": {
+    "accepted_tokens": 0,
+    "draft_tokens": 0,
+    "drafts": 0
+  },
+  "passed": false,
+  "check_detail": "called check_availability: True; text: No \u2014 Conference Room B is already booked tomorrow (2026-05-29) from 14:00 to 15:00 UTC. Would you like me to check anoth"
+}

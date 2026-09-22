@@ -1,0 +1,12 @@
+{
+  "model": "master-lite",
+  "endpoint": "http://localhost:12468/v1",
+  "benchmark": "BFCL",
+  "samples": 25,
+  "duration_s": 185.7326147556305,
+  "scores": {
+    "\u2502": 80.0
+  },
+  "eval_log": "/home/sumergoconicio/Documents/Code/EvalsBench/logs/20260922_master-lite_bfcl/2026-09-22T10-08-43-00-00_bfcl_VQjx23DWAjLXiUBRFn9uex.eval",
+  "timestamp": "2026-09-22 12:11:46"
+}

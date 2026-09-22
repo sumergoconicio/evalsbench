@@ -1,0 +1,62 @@
+{
+  "id": 1,
+  "area": "Lookup",
+  "prompt": "What department does Alice Chen work in?",
+  "steps": [
+    {
+      "round": 1,
+      "wall": 1.1482873639906757,
+      "ttft": 1.1481260349974036,
+      "usage": {
+        "prompt_tokens": 1329,
+        "total_tokens": 1356,
+        "completion_tokens": 27
+      },
+      "content": null,
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "chatcmpl-tool-8a66d8ac80793e09",
+          "type": "function",
+          "function": {
+            "name": "lookup_employee",
+            "arguments": "{\"name\": \"Alice Chen\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "lookup_employee",
+          "args": "{\"name\": \"Alice Chen\"}",
+          "result": "{\"employee\": \"Alice Chen (employee id E001, Engineer, department Engineering, team Eng Core, status Active)\"}"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "wall": 1.0228577950038016,
+      "ttft": 1.022713890997693,
+      "usage": {
+        "prompt_tokens": 1400,
+        "total_tokens": 1424,
+        "completion_tokens": 24
+      },
+      "content": "Alice Chen works in the **Engineering** department (team: Eng Core, title: Engineer, status: Active).",
+      "reasoning_content": null,
+      "tool_calls": null,
+      "finish": null
+    }
+  ],
+  "rounds": 2,
+  "maxed_out": false,
+  "final_text": "Alice Chen works in the **Engineering** department (team: Eng Core, title: Engineer, status: Active).",
+  "final_text_plus_reasoning": "Alice Chen works in the **Engineering** department (team: Eng Core, title: Engineer, status: Active).",
+  "metrics": {
+    "accepted_tokens": 39.0,
+    "draft_tokens": 98.0,
+    "drafts": 14.0
+  },
+  "passed": true,
+  "check_detail": "text mentions Engineering: True; wiki used: False"
+}

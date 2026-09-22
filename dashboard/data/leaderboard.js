@@ -1,6 +1,134 @@
 window.LEADERBOARD_DATA = {
   "schema_version": "1.0",
   "models": {
+    "master-lite": {
+      "id": "master-lite",
+      "name": "master-lite",
+      "is_cloud": false,
+      "specs": {
+        "architecture": "Transformer",
+        "attention_layers": 32,
+        "num_kv_heads": 8,
+        "head_dim": 128,
+        "context_window": 131072,
+        "kv_bytes_per_token_per_gpu": 8192,
+        "vram_weights_gib": 20.0,
+        "size_class": "Mid-Weight (14B-35B)",
+        "huggingface_url": "https://huggingface.co/models?search=master-lite"
+      },
+      "benchmarks": {
+        "HumanEval": {
+          "scores": {
+            "accuracy": 0.84,
+            "stderr": 0.075
+          },
+          "duration_seconds": 436.39,
+          "timestamp": "2026-09-22 12:08:26",
+          "accuracy": 0.84,
+          "stderr": 0.075
+        },
+        "IFEval": {
+          "scores": {
+            "prompt_strict_acc": 0.72,
+            "prompt_strict_stderr": 0.092,
+            "prompt_loose_acc": 0.72,
+            "prompt_loose_stderr": 0.092,
+            "inst_strict_acc": 0.769,
+            "inst_strict_stderr": 0.081,
+            "inst_loose_acc": 0.769,
+            "inst_loose_stderr": 0.081,
+            "final_acc": 0.745,
+            "final_stderr": 0.099
+          },
+          "duration_seconds": 1096.05,
+          "timestamp": "2026-09-22 12:00:24",
+          "prompt_strict_acc": 0.72,
+          "prompt_strict_stderr": 0.092,
+          "prompt_loose_acc": 0.72,
+          "prompt_loose_stderr": 0.092,
+          "inst_strict_acc": 0.769,
+          "inst_strict_stderr": 0.081,
+          "inst_loose_acc": 0.769,
+          "inst_loose_stderr": 0.081,
+          "final_acc": 0.745,
+          "final_stderr": 0.099
+        },
+        "BFCL": {
+          "scores": {
+            "\u2502": 80.0
+          },
+          "duration_seconds": 185.73,
+          "timestamp": "2026-09-22 12:11:50",
+          "\u2502": 80.0
+        }
+      }
+    },
+    "smolagent": {
+      "id": "smolagent",
+      "name": "smolagent",
+      "is_cloud": false,
+      "specs": {
+        "architecture": "Transformer",
+        "attention_layers": 32,
+        "num_kv_heads": 8,
+        "head_dim": 128,
+        "context_window": 131072,
+        "kv_bytes_per_token_per_gpu": 8192,
+        "vram_weights_gib": 20.0,
+        "size_class": "Mid-Weight (14B-35B)",
+        "huggingface_url": "https://huggingface.co/models?search=smolagent"
+      },
+      "benchmarks": {
+        "IFEval": {
+          "scores": {
+            "prompt_strict_acc": 0.91,
+            "prompt_strict_stderr": 0.029,
+            "prompt_loose_acc": 0.93,
+            "prompt_loose_stderr": 0.026,
+            "inst_strict_acc": 0.931,
+            "inst_strict_stderr": 0.023,
+            "inst_loose_acc": 0.945,
+            "inst_loose_stderr": 0.021,
+            "final_acc": 0.929,
+            "final_stderr": 0.032
+          },
+          "duration_seconds": 189.71,
+          "timestamp": "2026-09-10 20:39:27",
+          "prompt_strict_acc": 0.91,
+          "prompt_strict_stderr": 0.029,
+          "prompt_loose_acc": 0.93,
+          "prompt_loose_stderr": 0.026,
+          "inst_strict_acc": 0.931,
+          "inst_strict_stderr": 0.023,
+          "inst_loose_acc": 0.945,
+          "inst_loose_stderr": 0.021,
+          "final_acc": 0.929,
+          "final_stderr": 0.032
+        },
+        "HumanEval": {
+          "scores": {
+            "\u2502": 1783.0,
+            "NotFoundError:": 404.0
+          },
+          "duration_seconds": 9.99,
+          "timestamp": "2026-09-10 22:17:47",
+          "accuracy": 0.6,
+          "stderr": 0.163
+        },
+        "HumanEval-10": {
+          "scores": {
+            "accuracy": 0.6,
+            "stderr": 0.163
+          },
+          "duration_seconds": 172.0,
+          "timestamp": "2026-09-10 22:22:46"
+        },
+        "BFCL": {
+          "\u2502": 404.0,
+          "Python": 3.0
+        }
+      }
+    },
     "Holo 3.1 35B": {
       "id": "Holo 3.1 35B",
       "name": "Holo 3.1 35B",
@@ -135,6 +263,10 @@ window.LEADERBOARD_DATA = {
           "inst_loose_stderr": 0.0,
           "final_acc": 1.0,
           "final_stderr": 0.0
+        },
+        "PawBench": {
+          "accuracy": 0.421,
+          "stderr": 0.092
         }
       }
     },
@@ -269,6 +401,56 @@ window.LEADERBOARD_DATA = {
           "inst_loose_stderr": 0.0,
           "final_acc": 1.0,
           "final_stderr": 0.0
+        }
+      }
+    },
+    "Nex-N2.5-mini-NVFP4": {
+      "id": "Nex-N2.5-mini-NVFP4",
+      "name": "Nex-N2.5-mini-NVFP4",
+      "is_cloud": false,
+      "specs": {
+        "architecture": "Qwen3_5MoeForConditionalGeneration",
+        "attention_layers": 32,
+        "num_kv_heads": 8,
+        "head_dim": 64,
+        "context_window": 131072,
+        "kv_bytes_per_token_per_gpu": 16384,
+        "vram_weights_gib": 20.0,
+        "size_class": "Mid-Weight (14B-35B)",
+        "huggingface_url": "https://huggingface.co/models?search=Nex-N2.5-mini-NVFP4"
+      },
+      "benchmarks": {
+        "IFEval": {
+          "samples": 100,
+          "strict_accuracy": 0.88,
+          "loose_accuracy": 0.91,
+          "duration_s": 265.0,
+          "profile": "frontier-agent"
+        },
+        "HumanEval": {
+          "samples": 100,
+          "pass_at_1": 0.91,
+          "duration_s": 145.1,
+          "profile": "frontier-agent"
+        },
+        "BFCL_Agent": {
+          "samples": 100,
+          "accuracy": 0.71,
+          "duration_s": 489.0,
+          "profile": "frontier-agent"
+        },
+        "BFCL_Tool": {
+          "samples": 98,
+          "accuracy": 0.7245,
+          "duration_s": 5780.6,
+          "profile": "frontier-tool"
+        },
+        "GAIA": {
+          "samples": 25,
+          "preflight_accuracy": 1.0,
+          "completed_accuracy": 0.25,
+          "duration_s": 2575.0,
+          "profile": "frontier-agent"
         }
       }
     },

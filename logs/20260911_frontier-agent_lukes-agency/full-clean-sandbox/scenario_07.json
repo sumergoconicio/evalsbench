@@ -1,0 +1,68 @@
+{
+  "id": 7,
+  "area": "Scheduling",
+  "prompt": "Is Conference Room B available tomorrow from 14:00 to 15:00 UTC?",
+  "steps": [
+    {
+      "round": 1,
+      "wall": 3.631068315997254,
+      "ttft": 0.6611192069976823,
+      "usage": {
+        "completion_tokens": 197,
+        "completion_tokens_details": {
+          "reasoning_tokens": 111
+        },
+        "prompt_tokens": 1508,
+        "total_tokens": 1705
+      },
+      "content": "Let me check the availability of Conference Room B for tomorrow afternoon.\n",
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "chatcmpl-tool-b5c27113b1bd5e62",
+          "type": "function",
+          "function": {
+            "name": "check_availability",
+            "arguments": "{\"room\": \"Conference Room B\", \"start\": \"2026-05-29T14:00:00Z\", \"end\": \"2026-05-29T15:00:00Z\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "check_availability",
+          "args": "{\"room\": \"Conference Room B\", \"start\": \"2026-05-29T14:00:00Z\", \"end\": \"2026-05-29T15:00:00Z\"}",
+          "result": "{\"available\": true, \"room\": \"Conference Room B\", \"start\": \"2026-05-29T14:00:00Z\", \"end\": \"2026-05-29T15:00:00Z\"}"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "wall": 1.7576242520008236,
+      "ttft": 0.6949619349979912,
+      "usage": {
+        "completion_tokens": 83,
+        "completion_tokens_details": {
+          "reasoning_tokens": 24
+        },
+        "prompt_tokens": 1677,
+        "total_tokens": 1760
+      },
+      "content": "Yes, **Conference Room B** is available tomorrow (May 29, 2026) from 14:00 to 15:00 UTC. The room is free during that time slot. Would you like me to book it for you?",
+      "reasoning_content": null,
+      "tool_calls": null,
+      "finish": null
+    }
+  ],
+  "rounds": 2,
+  "maxed_out": false,
+  "final_text": "Yes, **Conference Room B** is available tomorrow (May 29, 2026) from 14:00 to 15:00 UTC. The room is free during that time slot. Would you like me to book it for you?",
+  "final_text_plus_reasoning": "Let me check the availability of Conference Room B for tomorrow afternoon.\n\nYes, **Conference Room B** is available tomorrow (May 29, 2026) from 14:00 to 15:00 UTC. The room is free during that time slot. Would you like me to book it for you?",
+  "metrics": {
+    "accepted_tokens": 0,
+    "draft_tokens": 0,
+    "drafts": 0
+  },
+  "passed": true,
+  "check_detail": "called check_availability: True; text: Yes, **Conference Room B** is available tomorrow (May 29, 2026) from 14:00 to 15:00 UTC. The room is free during that ti"
+}

@@ -1,0 +1,32 @@
+{
+  "id": 14,
+  "area": "Restraint",
+  "prompt": "What's the weather forecast for London tomorrow?",
+  "steps": [
+    {
+      "round": 1,
+      "wall": 3.0072435819893144,
+      "ttft": 1.724032027006615,
+      "usage": {
+        "prompt_tokens": 1330,
+        "total_tokens": 1398,
+        "completion_tokens": 68
+      },
+      "content": "I'm sorry, but I don't have access to weather information. My capabilities are limited to internal MiniCorp tools like employee lookups, meeting room bookings, support tickets, and currency conversions.\n\nFor a weather forecast, I'd recommend checking a dedicated weather service like the BBC Weather, Met Office, or your preferred weather app.",
+      "reasoning_content": null,
+      "tool_calls": null,
+      "finish": null
+    }
+  ],
+  "rounds": 1,
+  "maxed_out": false,
+  "final_text": "I'm sorry, but I don't have access to weather information. My capabilities are limited to internal MiniCorp tools like employee lookups, meeting room bookings, support tickets, and currency conversions.\n\nFor a weather forecast, I'd recommend checking a dedicated weather service like the BBC Weather, Met Office, or your preferred weather app.",
+  "final_text_plus_reasoning": "I'm sorry, but I don't have access to weather information. My capabilities are limited to internal MiniCorp tools like employee lookups, meeting room bookings, support tickets, and currency conversions.\n\nFor a weather forecast, I'd recommend checking a dedicated weather service like the BBC Weather, Met Office, or your preferred weather app.",
+  "metrics": {
+    "accepted_tokens": 37.0,
+    "draft_tokens": 224.0,
+    "drafts": 32.0
+  },
+  "passed": true,
+  "check_detail": "tool calls: 0; text: I'm sorry, but I don't have access to weather information. My capabilities are limited to internal MiniCorp tools like e"
+}

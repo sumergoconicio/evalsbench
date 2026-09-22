@@ -1,0 +1,98 @@
+{
+  "id": 9,
+  "area": "Tickets",
+  "prompt": "File a high ticket assigned to whoever leads Support.",
+  "steps": [
+    {
+      "round": 1,
+      "wall": 0.6002894879784435,
+      "ttft": 0.6001760638318956,
+      "usage": {
+        "prompt_tokens": 1419,
+        "total_tokens": 1446,
+        "completion_tokens": 27,
+        "prompt_tokens_details": null,
+        "reasoning_tokens": 0
+      },
+      "content": null,
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "call_4ce4e7359ede4d36a77192cf",
+          "type": "function",
+          "function": {
+            "name": "directory_search",
+            "arguments": "{\"team\": \"Support\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "directory_search",
+          "args": "{\"team\": \"Support\"}",
+          "result": "{\"employees\": [\"Carol Nguyen (employee id E003, Support Lead, department Support, team Support, status Active)\", \"Grace Lee (employee id E007, Support Agent, department Support, team Support, status Active)\", \"Henry Miller (employee id E008, Support Agent, department Support, team Support, status Active)\"], \"count\": 3}"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "wall": 1.2896192010957748,
+      "ttft": 1.2894782410003245,
+      "usage": {
+        "prompt_tokens": 1542,
+        "total_tokens": 1601,
+        "completion_tokens": 59,
+        "prompt_tokens_details": null,
+        "reasoning_tokens": 0
+      },
+      "content": null,
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "call_0ef7f5881fbd492c8541e9cf",
+          "type": "function",
+          "function": {
+            "name": "create_support_ticket",
+            "arguments": "{\"title\": \"High priority issue \u2014 Support follow-up required\", \"priority\": \"high\", \"assignee\": \"Carol Nguyen\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "create_support_ticket",
+          "args": "{\"title\": \"High priority issue \u2014 Support follow-up required\", \"priority\": \"high\", \"assignee\": \"Carol Nguyen\"}",
+          "result": "{\"status\": \"created\", \"ticket_id\": \"TCK-0001\", \"title\": \"High priority issue \\u2014 Support follow-up required\", \"priority\": \"high\", \"assignee\": \"Carol Nguyen\"}"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "wall": 1.8713791090995073,
+      "ttft": 0.8967917531263083,
+      "usage": {
+        "prompt_tokens": 1669,
+        "total_tokens": 1757,
+        "completion_tokens": 88,
+        "prompt_tokens_details": null,
+        "reasoning_tokens": 0
+      },
+      "content": "Done. The leader of Support is **Carol Nguyen** (Support Lead, E003), and I've filed the ticket:\n\n- **Ticket ID:** TCK-0001\n- **Title:** High priority issue \u2014 Support follow-up required\n- **Priority:** High\n- **Assignee:** Carol Nguyen\n\nIf you'd like a more specific title or description on the ticket, just let me know.",
+      "reasoning_content": null,
+      "tool_calls": null,
+      "finish": null
+    }
+  ],
+  "rounds": 3,
+  "maxed_out": false,
+  "final_text": "Done. The leader of Support is **Carol Nguyen** (Support Lead, E003), and I've filed the ticket:\n\n- **Ticket ID:** TCK-0001\n- **Title:** High priority issue \u2014 Support follow-up required\n- **Priority:** High\n- **Assignee:** Carol Nguyen\n\nIf you'd like a more specific title or description on the ticket, just let me know.",
+  "final_text_plus_reasoning": "Done. The leader of Support is **Carol Nguyen** (Support Lead, E003), and I've filed the ticket:\n\n- **Ticket ID:** TCK-0001\n- **Title:** High priority issue \u2014 Support follow-up required\n- **Priority:** High\n- **Assignee:** Carol Nguyen\n\nIf you'd like a more specific title or description on the ticket, just let me know.",
+  "metrics": {
+    "accepted_tokens": 0,
+    "draft_tokens": 0,
+    "drafts": 0
+  },
+  "passed": true,
+  "check_detail": "ticket priority=high assignee=Carol Nguyen title=high priority issue \u2014 support follow-up required"
+}

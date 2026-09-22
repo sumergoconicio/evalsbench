@@ -1,0 +1,66 @@
+{
+  "id": 11,
+  "area": "Currency",
+  "prompt": "Convert 500 EUR to USD using the official MiniCorp rate.",
+  "steps": [
+    {
+      "round": 1,
+      "wall": 1.0288144259247929,
+      "ttft": 1.028712041908875,
+      "usage": {
+        "prompt_tokens": 1424,
+        "total_tokens": 1479,
+        "completion_tokens": 55,
+        "prompt_tokens_details": null,
+        "reasoning_tokens": 0
+      },
+      "content": null,
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "call_7ae9df346944494ba1ecf53f",
+          "type": "function",
+          "function": {
+            "name": "convert_currency",
+            "arguments": "{\"amount\": 500, \"from_currency\": \"EUR\", \"to_currency\": \"USD\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "convert_currency",
+          "args": "{\"amount\": 500, \"from_currency\": \"EUR\", \"to_currency\": \"USD\"}",
+          "result": "{\"amount\": 550.0, \"currency\": \"USD\", \"rate_used\": 1.1}"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "wall": 0.9094088969286531,
+      "ttft": 0.9093050570227206,
+      "usage": {
+        "prompt_tokens": 1521,
+        "total_tokens": 1553,
+        "completion_tokens": 32,
+        "prompt_tokens_details": null,
+        "reasoning_tokens": 0
+      },
+      "content": "500 EUR = **550.00 USD** (official MiniCorp rate: 1 EUR = 1.10 USD)",
+      "reasoning_content": null,
+      "tool_calls": null,
+      "finish": null
+    }
+  ],
+  "rounds": 2,
+  "maxed_out": false,
+  "final_text": "500 EUR = **550.00 USD** (official MiniCorp rate: 1 EUR = 1.10 USD)",
+  "final_text_plus_reasoning": "500 EUR = **550.00 USD** (official MiniCorp rate: 1 EUR = 1.10 USD)",
+  "metrics": {
+    "accepted_tokens": 0,
+    "draft_tokens": 0,
+    "drafts": 0
+  },
+  "passed": true,
+  "check_detail": "convert 500.0 EUR->USD = 550.0"
+}

@@ -1,0 +1,68 @@
+{
+  "id": 15,
+  "area": "Focus",
+  "prompt": "What team is Alice Chen on?",
+  "steps": [
+    {
+      "round": 1,
+      "wall": 1.1974559379959828,
+      "ttft": 0.6318985809994047,
+      "usage": {
+        "completion_tokens": 51,
+        "completion_tokens_details": {
+          "reasoning_tokens": 34
+        },
+        "prompt_tokens": 1493,
+        "total_tokens": 1544
+      },
+      "content": null,
+      "reasoning_content": null,
+      "tool_calls": [
+        {
+          "id": "chatcmpl-tool-8909fb227330f394",
+          "type": "function",
+          "function": {
+            "name": "lookup_employee",
+            "arguments": "{\"name\": \"Alice Chen\"}"
+          }
+        }
+      ],
+      "finish": null,
+      "tool_results": [
+        {
+          "name": "lookup_employee",
+          "args": "{\"name\": \"Alice Chen\"}",
+          "result": "{\"employee\": \"Alice Chen (employee id E001, Engineer, department Engineering, team Eng Core, status Active)\"}"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "wall": 0.7953271360020153,
+      "ttft": 0.6643471249990398,
+      "usage": {
+        "completion_tokens": 26,
+        "completion_tokens_details": {
+          "reasoning_tokens": 9
+        },
+        "prompt_tokens": 1556,
+        "total_tokens": 1582
+      },
+      "content": "Alice Chen is on the **Eng Core** team in the Engineering department.",
+      "reasoning_content": null,
+      "tool_calls": null,
+      "finish": null
+    }
+  ],
+  "rounds": 2,
+  "maxed_out": false,
+  "final_text": "Alice Chen is on the **Eng Core** team in the Engineering department.",
+  "final_text_plus_reasoning": "Alice Chen is on the **Eng Core** team in the Engineering department.",
+  "metrics": {
+    "accepted_tokens": 0,
+    "draft_tokens": 0,
+    "drafts": 0
+  },
+  "passed": true,
+  "check_detail": "wiki used: False; text: Alice Chen is on the **Eng Core** team in the Engineering department."
+}

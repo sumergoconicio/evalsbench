@@ -20,6 +20,9 @@ BENCHMARK_DEPENDENCIES: Dict[str, List[str]] = {
     "mbpp": ["inspect-evals>=0.18.0"],
     "livecodebench": ["inspect-evals>=0.18.0"],
     "aider_polyglot": ["inspect-evals>=0.18.0"],
+    "niah": ["inspect-evals>=0.18.0"],
+    "mmmu": ["inspect-evals>=0.18.0"],
+    "docvqa": ["inspect-evals>=0.18.0"],
 }
 
 MODULE_CHECK_MAP: Dict[str, str] = {
