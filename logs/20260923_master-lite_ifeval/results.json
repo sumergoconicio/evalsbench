@@ -1,0 +1,10 @@
+{
+  "model": "master-lite",
+  "endpoint": "http://localhost:12468/v1",
+  "benchmark": "IFEval",
+  "samples": 25,
+  "duration_s": 420.25686168670654,
+  "scores": {},
+  "eval_log": "/home/sumergoconicio/Documents/Code/EvalsBench/logs/20260923_master-lite_ifeval/2026-09-23T07-04-53-00-00_ifeval_HaiUMTAkKZaNKgPN9FXPih.eval",
+  "timestamp": "2026-09-23 09:11:49"
+}

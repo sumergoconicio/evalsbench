@@ -17,7 +17,8 @@ CHAI_MODELS_DIR = Path("/home/sumergoconicio/chai/references/models")
 CHAI_ENV_PATH = Path("/home/sumergoconicio/chai/.env")
 
 # Common local ports to auto-probe for active OpenAI-compatible servers
-LOCAL_PROBE_PORTS = [2468, 8000, 8080, 11434, 5000, 12345]
+# (12468 = primary gateway, 1123 = raw llama-server on this host).
+LOCAL_PROBE_PORTS = [2468, 1123, 8000, 8080, 11434, 12468, 5000, 12345]
 
 
 def load_chai_env() -> dict[str, str]:

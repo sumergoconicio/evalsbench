@@ -6,24 +6,27 @@ holding the parent blocked on a kernel-level ``readline()`` past
 their nominal wall-clock budget.
 """
 
+import json
 import os
 import signal
 import sys
 import threading
 import time
 import subprocess
+import urllib.request
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 from .config import get_log_dir_for_benchmark, load_chai_env
 from .registry import BENCHMARK_REGISTRY, BenchmarkTask, get_difficulty_task_args
+from .router import resolve_model_and_env
 from .shims import apply_inspect_openai_shims
 from .sandboxes import prune_inspect_containers
 from .doctor import ensure_dependencies_for_task
-from .progress import LiveProgressBar
+from .progress import LiveProgressBar, LiveTelemetryMonitor
 from .exporters import (
-    EDS_BENCHMARK_KEYS,
     extract_eds_metrics,
+    is_eds_benchmark,
     write_benchmark_report,
     write_eds_scorecard,
     update_models_yaml,
@@ -44,18 +47,29 @@ from .exporters import (
 _REPO_ROOT: Path = Path(__file__).resolve().parent.parent
 
 
-def _build_subprocess_env(*, base_url: str, api_key: str) -> Dict[str, str]:
+def _build_subprocess_env(
+    *,
+    base_url: Optional[str] = None,
+    api_key: Optional[str] = None,
+    extra_env: Optional[Dict[str, str]] = None,
+) -> Dict[str, str]:
     """Compose the subprocess env with PYTHONPATH and endpoint overrides.
 
     Args:
         base_url: OpenAI-compatible endpoint URL injected as
-            ``OPENAI_BASE_URL``.
-        api_key: API key injected as ``OPENAI_API_KEY``.
+            ``OPENAI_BASE_URL``. Skipped for direct cloud routing
+            (Inspect AI's native vendor providers read their own
+            credential variables instead).
+        api_key: API key injected as ``OPENAI_API_KEY``. Skipped for
+            direct cloud routing.
+        extra_env: Additional provider credential overrides (e.g.
+            ``GEMINI_API_KEY``) merged last so they win.
 
     Returns:
         Dict[str, str]: a copy of ``os.environ`` with the
-        ``PYTHONPATH`` prefix pointing at the repository root and the
-        OpenAI-compatible endpoint variables set.
+        ``PYTHONPATH`` prefix pointing at the repository root, the
+        OpenAI-compatible endpoint variables (local runs only), and
+        the caller-supplied provider overrides.
     """
     env = os.environ.copy()
     existing = env.get("PYTHONPATH", "")
@@ -63,9 +77,70 @@ def _build_subprocess_env(*, base_url: str, api_key: str) -> Dict[str, str]:
     if existing:
         paths.append(existing)
     env["PYTHONPATH"] = os.pathsep.join(paths)
-    env["OPENAI_BASE_URL"] = base_url
-    env["OPENAI_API_KEY"] = api_key
+    if base_url is not None:
+        env["OPENAI_BASE_URL"] = base_url
+    if api_key is not None:
+        env["OPENAI_API_KEY"] = api_key
+    if extra_env:
+        env.update(extra_env)
     return env
+
+
+# ---------------------------------------------------------------------------
+# Inference-server slot saturation poller (Task 2.2)
+# ---------------------------------------------------------------------------
+
+class _SlotPoller(threading.Thread):
+    """Background poller for the local inference server's ``/slots`` endpoint.
+
+    llama-server (and compatible engines) expose per-slot processing
+    state. The poller samples it every few seconds and feeds
+    :meth:`LiveTelemetryMonitor.set_slot_status` so the live card shows
+    multi-stream saturation. Every failure mode (endpoint absent, non-
+    JSON body, connection refused) degrades silently — telemetry is
+    best-effort and must never fail a benchmark run.
+    """
+
+    def __init__(
+        self,
+        endpoint_url: str,
+        monitor: "LiveTelemetryMonitor",
+        interval_s: float = 3.0,
+    ):
+        super().__init__(daemon=True)
+        # Audit fix: llama-server mounts ``/slots`` at the host root,
+        # not under the ``/v1`` API prefix. Strip the suffix so an
+        # endpoint like ``http://localhost:1123/v1`` probes
+        # ``http://localhost:1123/slots`` instead of 404-ing on
+        # ``/v1/slots``.
+        base = endpoint_url.rstrip("/")
+        if base.endswith("/v1"):
+            base = base[: -len("/v1")]
+        self.endpoint_url = endpoint_url.rstrip("/")
+        self._slots_url = f"{base}/slots"
+        self.monitor = monitor
+        self.interval_s = interval_s
+        self._stop_event = threading.Event()
+
+    def run(self) -> None:
+        url = self._slots_url
+        while not self._stop_event.wait(self.interval_s):
+            try:
+                req = urllib.request.Request(url, headers={"User-Agent": "EvalsBench"})
+                with urllib.request.urlopen(req, timeout=2.0) as resp:
+                    data = json.loads(resp.read().decode("utf-8"))
+                slots = data.get("slots") if isinstance(data, dict) else data
+                if isinstance(slots, list):
+                    active = sum(
+                        1 for s in slots
+                        if isinstance(s, dict) and s.get("is_processing")
+                    )
+                    self.monitor.set_slot_status(active, len(slots))
+            except Exception:
+                continue
+
+    def stop(self) -> None:
+        self._stop_event.set()
 
 
 # ---------------------------------------------------------------------------
@@ -185,10 +260,21 @@ class EvalsRunner:
         self.max_connections = max_connections
         self.chai_sync = chai_sync
         self.difficulty_profile = difficulty_profile
-        
-        # Resolve API Key
+
+        # Direct cloud routing (PRD §6.3): resolve provider-prefixed
+        # model strings to Inspect AI vendor execution and source the
+        # credentials from ~/chai/.env — no LiteLLM proxy in the path.
+        resolved_model, provider, is_cloud, cloud_env = resolve_model_and_env(
+            model_name, self.endpoint_url
+        )
+        self.provider = provider
+        self.is_cloud = is_cloud
+        self.cloud_env = cloud_env
+
+        # Resolve API Key (local OpenAI-compatible endpoints only; cloud
+        # credentials travel inside ``cloud_env`` instead).
         chai_env = load_chai_env()
-        if not api_key:
+        if not api_key and not is_cloud:
             if "openrouter.ai" in self.endpoint_url:
                 self.api_key = chai_env.get("OPENROUTER_API_KEY", "dummy")
             elif "api.openai.com" in self.endpoint_url:
@@ -200,16 +286,36 @@ class EvalsRunner:
 
         apply_inspect_openai_shims()
 
+    def _model_spec(self) -> str:
+        """Inspect AI model string for the current routing decision.
+
+        Local models ride the OpenAI-compatible provider shim
+        (``openai/<alias>``); cloud models pass through their native
+        vendor-prefixed string (e.g. ``google/gemini-2.5-flash``)
+        untouched so Inspect AI selects the built-in provider.
+        """
+        if self.is_cloud:
+            return self.model_name
+        return f"openai/{self.model_name}"
+
+    def _subprocess_env(self) -> Dict[str, str]:
+        """Subprocess env for the current routing decision."""
+        if self.is_cloud:
+            # Cloud: provider credentials only — never point
+            # OPENAI_BASE_URL at a vendor gateway.
+            return _build_subprocess_env(extra_env=self.cloud_env)
+        return _build_subprocess_env(
+            base_url=self.endpoint_url,
+            api_key=self.api_key,
+        )
+
     def run_preflight_check(self, task: BenchmarkTask) -> bool:
         """
         Runs a fast 1-sample preflight test to verify connectivity, tokenization,
         and Docker sandbox readiness within 10 seconds.
         """
         print(f"\n🔍 [Preflight Gate] Testing 1 sample for {task.name}...")
-        env = _build_subprocess_env(
-            base_url=self.endpoint_url,
-            api_key=self.api_key,
-        )
+        env = self._subprocess_env()
 
         cmd = [
             sys.executable,
@@ -218,7 +324,7 @@ class EvalsRunner:
             "eval",
             task.task_id,
             "--model",
-            f"openai/{self.model_name}",
+            self._model_spec(),
             "-M",
             "responses_api=false",
             "--limit",
@@ -267,10 +373,25 @@ class EvalsRunner:
         limit: Optional[int] = None,
         sample_shuffle: int = 42,
         skip_preflight: bool = False,
+        time_limit: Optional[int] = None,
+        exhaustive: bool = False,
     ) -> Tuple[bool, Dict[str, Any], float]:
         """
         Executes a single benchmark task with auto-healing dependencies,
-        live transparent progress bar, and polite post-eval Docker pruning.
+        live dual-row telemetry monitor, dataset ceiling clamping, and
+        polite post-eval Docker pruning.
+
+        Args:
+            task_key: Registry key of the benchmark to run.
+            limit: Requested sample count. ``None`` falls back to
+                ``task.default_limit`` (legacy behavior).
+            sample_shuffle: Deterministic shuffle seed.
+            skip_preflight: Skip the 1-sample preflight validation gate.
+            time_limit: Optional per-run override of the task's
+                ``time_limit`` wall-clock budget in seconds.
+            exhaustive: When ``True`` the ``--limit`` flag is omitted
+                entirely so Inspect AI consumes the full dataset
+                (the ``complete`` scale).
 
         The function enforces two safety nets around the spawned
         :class:`subprocess.Popen` child:
@@ -299,12 +420,36 @@ class EvalsRunner:
         # 1. Auto-doctor dependency check
         ensure_dependencies_for_task(task_key)
 
-        samples = limit or task.default_limit
+        # Dataset ceiling clamping invariant (PRD §3.3): bounded
+        # benchmarks (e.g. custom-minicorp with 16 scenarios) clamp the
+        # requested sample count so live progress counters never read
+        # ``16/100`` against a 16-scenario dataset.
+        samples: Optional[int] = limit if limit is not None else task.default_limit
+        if not exhaustive and samples is not None and task.max_samples:
+            clamped = min(samples, task.max_samples)
+            if clamped != samples:
+                print(
+                    f"📐 [Ceiling Clamp] {task.name} dataset has {task.max_samples} "
+                    f"scenarios; clamping requested {samples} → {clamped}."
+                )
+            samples = clamped
+        if exhaustive:
+            # Exhaustive: omit --limit so Inspect AI consumes the
+            # whole dataset. The monitor needs a display denominator;
+            # prefer the dataset ceiling, then the default limit.
+            display_total = task.max_samples or task.default_limit
+        else:
+            display_total = samples or task.default_limit
+
+        effective_time_limit = time_limit or task.time_limit
         log_dir = get_log_dir_for_benchmark(self.model_name, task.name)
 
         print("\n" + "=" * 65)
-        print(f"🚀 Launching Benchmark: {task.name} ({samples} samples, {self.max_connections} slots)")
+        print(f"🚀 Launching Benchmark: {task.name} "
+              f"({'all samples' if exhaustive else f'{display_total} samples'}, {self.max_connections} slots)")
         print(f"Model: {self.model_name} @ {self.endpoint_url}")
+        print(f"Scoring: {task.scoring_mode.capitalize()} "
+              + ("(running accuracy shown live)" if task.scoring_mode == "immediate" else "(batch graded at run conclusion)"))
         print(f"Log Directory: {log_dir}")
         print("=" * 65)
 
@@ -314,10 +459,7 @@ class EvalsRunner:
                 print(f"⚠️ Skipping full batch for {task.name} due to preflight check failure.")
                 return False, {}, 0.0
 
-        env = _build_subprocess_env(
-            base_url=self.endpoint_url,
-            api_key=self.api_key,
-        )
+        env = self._subprocess_env()
 
         cmd = [
             sys.executable,
@@ -326,11 +468,13 @@ class EvalsRunner:
             "eval",
             task.task_id,
             "--model",
-            f"openai/{self.model_name}",
+            self._model_spec(),
             "-M",
             "responses_api=false",
-            "--limit",
-            str(samples),
+        ]
+        if not exhaustive:
+            cmd.extend(["--limit", str(samples)])
+        cmd.extend([
             "--sample-shuffle",
             str(sample_shuffle),
             "--max-connections",
@@ -338,14 +482,14 @@ class EvalsRunner:
             "--turn-limit",
             str(task.turn_limit),
             "--time-limit",
-            str(task.time_limit),
+            str(effective_time_limit),
             "--max-tool-output",
             str(task.max_tool_output),
             "--reasoning-history",
             task.reasoning_history,
             "--log-dir",
             str(log_dir),
-        ]
+        ])
         if task.args:
             cmd.extend(task.args)
         diff_args = get_difficulty_task_args(task_key, self.difficulty_profile)
@@ -354,7 +498,14 @@ class EvalsRunner:
 
         start_time = time.time()
         raw_output_lines = []
-        progress_bar = LiveProgressBar(task.name, total_samples=samples)
+        progress_bar = LiveTelemetryMonitor(
+            task.name,
+            total_samples=display_total,
+            scoring_mode=task.scoring_mode,
+            model_name=self.model_name,
+            endpoint_url=self.endpoint_url,
+            max_connections=self.max_connections,
+        )
 
         # Pre-bind ``proc`` so the outer ``finally`` orphan-guard
         # can reference it even when ``subprocess.Popen`` itself
@@ -380,6 +531,19 @@ class EvalsRunner:
             )
             _proc_stdout = proc.stdout
 
+            # Task 2.2: arm the slot-saturation poller for local
+            # inference engines. Cloud vendor endpoints expose no
+            # ``/slots`` resource, so the poller is local-only. Any
+            # poller failure is silently ignored by its run loop —
+            # telemetry is best-effort and never fails a benchmark.
+            _slot_poller: Optional[_SlotPoller] = None
+            if not self.is_cloud:
+                try:
+                    _slot_poller = _SlotPoller(self.endpoint_url, progress_bar)
+                    _slot_poller.start()
+                except Exception:
+                    _slot_poller = None
+
             # R5 (BLOCKER): arm a watchdog timer BEFORE entering the
             # kernel-level ``readline()`` loop. ``proc.wait(timeout=...)``
             # below is unreachable while the loop holds readline — a
@@ -392,7 +556,7 @@ class EvalsRunner:
             # readline iterator. The timer is cancelled as soon as the
             # loop exits for ANY reason — normal EOF, exception, or
             # ``break`` — so no zombie timer thread lingers.
-            _wait_budget_s = task.time_limit + _SUBPROCESS_WAIT_MARGIN_S
+            _wait_budget_s = effective_time_limit + _SUBPROCESS_WAIT_MARGIN_S
             _watchdog = threading.Timer(
                 _wait_budget_s,
                 _terminate_process_group,
@@ -422,6 +586,13 @@ class EvalsRunner:
                     _watchdog.cancel()
                 except Exception:
                     pass
+                # Telemetry poller teardown: stop sampling /slots as
+                # soon as the streaming loop exits.
+                if _slot_poller is not None:
+                    try:
+                        _slot_poller.stop()
+                    except Exception:
+                        pass
                 # CONDITIONAL: defensive stream-close — prevent the
                 # inspect_ai stdout pipe from leaking the file
                 # descriptor across the long-running CLI session.
@@ -484,7 +655,7 @@ class EvalsRunner:
             # preserved verbatim for every other registry entry).
             _eds_aggregates: Dict[str, Any] = {}
             _eds_eval_log_path: Optional[str] = None
-            if task_key in EDS_BENCHMARK_KEYS:
+            if is_eds_benchmark(task_key):
                 _eds_eval_log_path = eval_log_path
                 if not _eds_eval_log_path and eval_files:
                     _eds_eval_log_path = str(eval_files[0])
@@ -531,7 +702,7 @@ class EvalsRunner:
             # run's log directory. Wrapped in try/except so export
             # failures degrade to a warning rather than failing the
             # benchmark run (offline-first contract).
-            if task_key in EDS_BENCHMARK_KEYS:
+            if is_eds_benchmark(task_key):
                 try:
                     _eds_scorecard_payload = (
                         _eds_aggregates
@@ -552,13 +723,29 @@ class EvalsRunner:
                         f"{task.name}: {_eds_err}"
                     )
 
-            # Update dynamic models.yaml
+            # Update dynamic models.yaml — attach live hardware
+            # telemetry (avg TTFT, avg decode TPS, cache hit rate,
+            # MTP acceptance) gathered by the monitor so the ledger
+            # carries the profiling profile alongside the scores
+            # (PRD §5.2 / Task 3.2). When the monitor saw no live
+            # per-sample feed, fall back to the authoritative EDS
+            # telemetry medians ingested from the .eval log so the
+            # ledger still records the run's hardware profile.
+            telemetry_payload = progress_bar.summary()
+            if not any(v is not None for v in telemetry_payload.values()):
+                if _eds_aggregates.get("median_decode_tps") is not None:
+                    telemetry_payload["avg_decode_tps"] = round(float(_eds_aggregates["median_decode_tps"]), 4)
+                if _eds_aggregates.get("median_ttft_s") is not None:
+                    telemetry_payload["avg_ttft_ms"] = round(float(_eds_aggregates["median_ttft_s"]) * 1000, 1)
+                if _eds_aggregates.get("median_mtp_acceptance") is not None:
+                    telemetry_payload["mtp_acceptance_rate"] = round(float(_eds_aggregates["median_mtp_acceptance"]), 4)
             update_models_yaml(
                 model_name=self.model_name,
                 endpoint_url=self.endpoint_url,
                 benchmark_name=task.name,
                 scores=scores,
                 duration_s=duration_s,
+                telemetry=telemetry_payload,
             )
 
             # Sync to ChAI Vault if enabled

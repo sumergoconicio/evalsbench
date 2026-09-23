@@ -1,68 +1,6 @@
 {
   "schema_version": "1.0",
   "models": {
-    "master-lite": {
-      "id": "master-lite",
-      "name": "master-lite",
-      "is_cloud": false,
-      "specs": {
-        "architecture": "Transformer",
-        "attention_layers": 32,
-        "num_kv_heads": 8,
-        "head_dim": 128,
-        "context_window": 131072,
-        "kv_bytes_per_token_per_gpu": 8192,
-        "vram_weights_gib": 20.0,
-        "size_class": "Mid-Weight (14B-35B)",
-        "huggingface_url": "https://huggingface.co/models?search=master-lite"
-      },
-      "benchmarks": {
-        "HumanEval": {
-          "scores": {
-            "accuracy": 0.84,
-            "stderr": 0.075
-          },
-          "duration_seconds": 436.39,
-          "timestamp": "2026-09-22 12:08:26",
-          "accuracy": 0.84,
-          "stderr": 0.075
-        },
-        "IFEval": {
-          "scores": {
-            "prompt_strict_acc": 0.72,
-            "prompt_strict_stderr": 0.092,
-            "prompt_loose_acc": 0.72,
-            "prompt_loose_stderr": 0.092,
-            "inst_strict_acc": 0.769,
-            "inst_strict_stderr": 0.081,
-            "inst_loose_acc": 0.769,
-            "inst_loose_stderr": 0.081,
-            "final_acc": 0.745,
-            "final_stderr": 0.099
-          },
-          "duration_seconds": 1096.05,
-          "timestamp": "2026-09-22 12:00:24",
-          "prompt_strict_acc": 0.72,
-          "prompt_strict_stderr": 0.092,
-          "prompt_loose_acc": 0.72,
-          "prompt_loose_stderr": 0.092,
-          "inst_strict_acc": 0.769,
-          "inst_strict_stderr": 0.081,
-          "inst_loose_acc": 0.769,
-          "inst_loose_stderr": 0.081,
-          "final_acc": 0.745,
-          "final_stderr": 0.099
-        },
-        "BFCL": {
-          "scores": {
-            "\u2502": 80.0
-          },
-          "duration_seconds": 185.73,
-          "timestamp": "2026-09-22 12:11:50",
-          "\u2502": 80.0
-        }
-      }
-    },
     "smolagent": {
       "id": "smolagent",
       "name": "smolagent",
@@ -451,6 +389,135 @@
           "completed_accuracy": 0.25,
           "duration_s": 2575.0,
           "profile": "frontier-agent"
+        }
+      }
+    },
+    "master-lite": {
+      "id": "master-lite",
+      "name": "master-lite",
+      "is_cloud": false,
+      "specs": {
+        "architecture": "Transformer",
+        "attention_layers": 32,
+        "num_kv_heads": 8,
+        "head_dim": 128,
+        "context_window": 131072,
+        "kv_bytes_per_token_per_gpu": 8192,
+        "vram_weights_gib": 20.0,
+        "size_class": "Mid-Weight (14B-35B)",
+        "huggingface_url": "https://huggingface.co/models?search=master-lite"
+      },
+      "benchmarks": {
+        "IFEval": {
+          "scores": {},
+          "duration_seconds": 420.26,
+          "timestamp": "2026-09-23 09:11:53",
+          "prompt_strict_acc": 0.72,
+          "prompt_strict_stderr": 0.092,
+          "prompt_loose_acc": 0.72,
+          "prompt_loose_stderr": 0.092,
+          "inst_strict_acc": 0.769,
+          "inst_strict_stderr": 0.081,
+          "inst_loose_acc": 0.769,
+          "inst_loose_stderr": 0.081,
+          "final_acc": 0.745,
+          "final_stderr": 0.099
+        },
+        "HumanEval": {
+          "scores": {},
+          "duration_seconds": 420.26,
+          "timestamp": "2026-09-23 09:19:19",
+          "accuracy": 0.84,
+          "stderr": 0.075
+        },
+        "BFCL": {
+          "scores": {
+            "\u2502": 80.0
+          },
+          "duration_seconds": 185.73,
+          "timestamp": "2026-09-22 12:11:50",
+          "\u2502": 80.0
+        },
+        "Custom-MiniCorp": {
+          "samples": 1,
+          "functional_pass_rate": 0.0,
+          "mean_composite": 0.25,
+          "hygiene_index": 0.625,
+          "safety_violations_total": 0,
+          "critical_violations_total": 0,
+          "axis1_pass_rate": 0.0,
+          "axis2_pass_rate": 1.0,
+          "axis3_safe_rate": 1.0,
+          "safety_gate_pass_rate": 1.0,
+          "median_decode_tps": 36.289494013641395
+        }
+      }
+    },
+    "frontier-agent": {
+      "id": "frontier-agent",
+      "name": "frontier-agent",
+      "is_cloud": false,
+      "specs": {
+        "architecture": "Transformer",
+        "attention_layers": 32,
+        "num_kv_heads": 8,
+        "head_dim": 128,
+        "context_window": 131072,
+        "kv_bytes_per_token_per_gpu": 8192,
+        "vram_weights_gib": 20.0,
+        "size_class": "Mid-Weight (14B-35B)",
+        "huggingface_url": "https://huggingface.co/models?search=frontier-agent"
+      },
+      "benchmarks": {
+        "Custom-MiniCorp": {
+          "scores": {
+            "samples": 1,
+            "functional_pass_rate": 0.0,
+            "mean_composite": 0.3333,
+            "hygiene_index": 0.8333,
+            "safety_violations_total": 0,
+            "critical_violations_total": 0,
+            "axis1_pass_rate": 0.0,
+            "axis2_pass_rate": 1.0,
+            "axis3_safe_rate": 1.0,
+            "safety_gate_pass_rate": 1.0,
+            "median_decode_tps": 76.13324082080028
+          },
+          "duration_seconds": 19.28,
+          "timestamp": "2026-09-23 11:58:32",
+          "samples": 1,
+          "functional_pass_rate": 0.0,
+          "mean_composite": 0.3333,
+          "hygiene_index": 0.8333,
+          "safety_violations_total": 0,
+          "critical_violations_total": 0,
+          "axis1_pass_rate": 0.0,
+          "axis2_pass_rate": 1.0,
+          "axis3_safe_rate": 1.0,
+          "safety_gate_pass_rate": 1.0,
+          "median_decode_tps": 76.13324082080028,
+          "eds_tag": "eds_tri_axis"
+        }
+      }
+    },
+    "demo": {
+      "id": "demo",
+      "name": "demo",
+      "is_cloud": false,
+      "specs": {
+        "architecture": "Transformer",
+        "attention_layers": 32,
+        "num_kv_heads": 8,
+        "head_dim": 128,
+        "context_window": 131072,
+        "kv_bytes_per_token_per_gpu": 8192,
+        "vram_weights_gib": 20.0,
+        "size_class": "Mid-Weight (14B-35B)",
+        "huggingface_url": "https://huggingface.co/models?search=demo"
+      },
+      "benchmarks": {
+        "MiniCorp": {
+          "eds_tag": "eds_tri_axis"
         }
       }
     },

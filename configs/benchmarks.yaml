@@ -1,0 +1,256 @@
+# =============================================================================
+# EvalsBench V2 — Declarative Benchmark Registry (Single Source of Truth)
+# =============================================================================
+# Schema version 1.0. Loaded by evalsbench/registry.py with a defensive
+# in-code fallback (see registry._DEFAULT_BENCHMARKS). Structure:
+#
+#   scales:     Dimension 3 — sample count per benchmark (--short/--long/--complete)
+#   profiles:   Dimension 2 — cognitive hardness stratification (--difficulty-profile)
+#   presets:    Dimension 1 — functional suites (--suite)
+#   benchmarks: Curated catalog with scoring modes, guardrails, and 1-line
+#               plain-English descriptions powering the CLI wizard and the
+#               AI facilitation skill (skills/run-evals/SKILL.md).
+#
+# Scoring modes:
+#   immediate — sample-level grading in flight (running accuracy printed live)
+#   deferred  — batch grading at run conclusion (Docker test runners, AST
+#               replay, or LLM-judge panels); monitor shows RECORDED status.
+#
+# Modality (filterable via --modality multimodal|text):
+#   multimodal: true  — requires image/document inputs (vision-capable models only)
+#   multimodal: false — text-only prompt/response cycles
+#
+# task_id sentinel: `eds:minicorp` resolves at load time to the absolute
+# `<repo>/evalsbench/eds/domains/minicorp/tasks.py@minicorp` file-path form
+# so the runner can spawn inspect_ai from any cwd.
+# =============================================================================
+
+version: "1.0"
+
+# ---------------------------------------------------------------------------
+# Dimension 3: Sample Scale Flags
+# ---------------------------------------------------------------------------
+scales:
+  short:
+    limit: 20
+    description: "20 questions per benchmark (~10-12 min local) — fast iteration & CI."
+  long:
+    limit: 100
+    description: "100 questions per benchmark (~45-60 min) — leaderboard confidence."
+  complete:
+    limit: null
+    description: "All questions (exhaustive dataset, 2-6 hours) — academic qualification."
+
+# ---------------------------------------------------------------------------
+# Dimension 2: Cognitive Hardness Profiles
+# ---------------------------------------------------------------------------
+profiles:
+  gatekeeper:
+    easy: 0.50
+    medium: 0.40
+    hard: 0.10
+    description: "50% Easy / 40% Medium / 10% Hard — rapid qualification & regression triage."
+  echelon:
+    easy: 0.10
+    medium: 0.50
+    hard: 0.40
+    description: "10% Easy / 50% Medium / 40% Hard — frontier stress-testing & trap exposure."
+  full:
+    description: "Natural unstratified dataset distribution across all difficulty tiers."
+
+# ---------------------------------------------------------------------------
+# Dimension 1: Functional Preset Suites
+# ---------------------------------------------------------------------------
+presets:
+  core:
+    description: "Everyday baseline: instruction following, tool routing, code, agency, prose."
+    benchmarks:
+      - ifeval
+      - bfcl
+      - humaneval
+      - custom-minicorp
+      - writingbench
+  agent:
+    description: "Autonomous agentic execution, stateful tool loops, Docker sysadmin, multimodal."
+    benchmarks:
+      - custom-minicorp
+      - terminal_bench_2
+      - gaia
+      - assistant_bench
+  knowledge:
+    description: "Long-form technical prose, open-web digital assistant, multi-hop research."
+    benchmarks:
+      - writingbench
+      - assistant_bench
+      - deepsearchqa
+  all:
+    description: "Complete 10-benchmark evaluation gauntlet across all cognitive & agentic axes."
+    benchmarks:
+      - ifeval
+      - bfcl
+      - humaneval
+      - custom-minicorp
+      - terminal_bench_2
+      - writingbench
+      - assistant_bench
+      - gaia
+      - docvqa
+      - deepsearchqa
+
+# ---------------------------------------------------------------------------
+# Curated 10-Benchmark Catalog
+# ---------------------------------------------------------------------------
+benchmarks:
+  ifeval:
+    name: IFEval
+    source: inspect_evals/ifeval
+    is_custom: false
+    category: instruction
+    multimodal: false
+    scoring_mode: immediate
+    default_limit: 25
+    default_max_connections: 8
+    time_limit: 120
+    turn_limit: 5
+    docker_required: false
+    max_samples: null
+    description: "Strict and loose negative constraint adherence, JSON schema delimiters, and formatting rules."
+
+  bfcl:
+    name: BFCL
+    source: inspect_evals/bfcl
+    is_custom: false
+    category: tool_use
+    multimodal: false
+    scoring_mode: deferred
+    default_limit: 25
+    default_max_connections: 8
+    time_limit: 180
+    turn_limit: 25
+    docker_required: false
+    max_samples: null
+    description: "Berkeley Function Calling Leaderboard for deterministic single, parallel, and multi-turn tool dispatch."
+
+  humaneval:
+    name: HumanEval
+    source: inspect_evals/humaneval
+    is_custom: false
+    category: coding
+    multimodal: false
+    scoring_mode: deferred
+    default_limit: 25
+    default_max_connections: 8
+    time_limit: 120
+    turn_limit: 5
+    docker_required: true
+    max_samples: 164
+    description: "Functional Python coding primitives and pass@1 automated unit test validation in Docker."
+
+  custom-minicorp:
+    name: Custom-MiniCorp
+    source: evalsbench.eds.domains.minicorp.tasks.py@minicorp
+    task_id: eds:minicorp
+    is_custom: true
+    category: agency
+    multimodal: false
+    scoring_mode: immediate
+    default_limit: 16
+    default_max_connections: 1
+    time_limit: 90
+    turn_limit: 8
+    docker_required: false
+    max_samples: 16
+    description: "16-scenario stateful agency bench testing lookup, ticketing, calendar booking, and zero-tolerance safety traps."
+
+  terminal_bench_2:
+    name: TerminalBench2
+    source: inspect_harbor/terminal_bench_2
+    is_custom: false
+    category: sysadmin
+    multimodal: false
+    scoring_mode: deferred
+    default_limit: 25
+    default_max_connections: 4
+    time_limit: 600
+    turn_limit: 30
+    docker_required: true
+    max_samples: null
+    description: "Autonomous real-world Linux system administration, compilation, and troubleshooting inside Docker."
+
+  writingbench:
+    name: WritingBench
+    source: inspect_evals/writingbench
+    is_custom: false
+    category: writing
+    multimodal: false
+    scoring_mode: deferred
+    default_limit: 25
+    default_max_connections: 4
+    time_limit: 600
+    turn_limit: 5
+    docker_required: false
+    max_samples: null
+    description: "Multi-domain long-form prose evaluated by Anthropic Claude Haiku judge (claude-haiku-4-5-20251001)."
+
+  assistant_bench:
+    name: AssistantBench
+    source: inspect_evals/assistant_bench_web_search_zero_shot
+    is_custom: false
+    category: assistant
+    multimodal: false
+    scoring_mode: deferred
+    default_limit: 25
+    default_max_connections: 4
+    time_limit: 600
+    turn_limit: 15
+    docker_required: false
+    max_samples: 214
+    description: "Real-world digital assistant tasks requiring web search, information extraction, and constraint resolution."
+
+  gaia:
+    name: GAIA
+    source: inspect_evals/gaia
+    is_custom: false
+    category: multimodal
+    multimodal: true
+    scoring_mode: deferred
+    default_limit: 25
+    default_max_connections: 4
+    time_limit: 300
+    turn_limit: 30
+    docker_required: true
+    max_samples: null
+    args:
+      - --max-tokens
+      - "4096"
+    description: "Multi-modal, multi-step general AI assistant reasoning and tool chaining in Docker."
+
+  docvqa:
+    name: DocVQA
+    source: inspect_evals/docvqa
+    is_custom: false
+    category: document
+    multimodal: true
+    scoring_mode: immediate
+    default_limit: 25
+    default_max_connections: 4
+    time_limit: 180
+    turn_limit: 5
+    docker_required: false
+    max_samples: null
+    description: "Visual document understanding and key-value extraction across forms, invoices, and dense tables."
+
+  deepsearchqa:
+    name: DeepSearchQA
+    source: inspect_harbor/kgmon_deepsearchqa
+    is_custom: false
+    category: research
+    multimodal: false
+    scoring_mode: deferred
+    default_limit: 25
+    default_max_connections: 4
+    time_limit: 600
+    turn_limit: 30
+    docker_required: true
+    max_samples: 900
+    description: "Google DeepMind 900-prompt multi-hop deep research and factual information retrieval."

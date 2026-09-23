@@ -8,12 +8,16 @@ Originally engineered for high-throughput inference environments (NVIDIA DGX Spa
 
 ## 🌟 Key Capabilities
 
+* **The 3D Operational Matrix:** Orthogonally compose functional preset suites (`--suite`), cognitive hardness profiles (`--difficulty-profile`), and sample scale flags (`--short` / `--long` / `--complete`) for any qualification or stress-test scenario.
+* **Declarative Benchmark Registry:** `configs/benchmarks.yaml` is the single source of truth for the catalog, presets, profiles, and scales — loaded defensively with an in-code fallback. Powering both the CLI wizard and AI facilitation skill.
+* **Real-Time Telemetry Engine:** A dual-row live terminal monitor showing per-question TTFT (prefill latency), decode tok/s, prompt token volume with KV-cache hit percentage, speculative decoding (MTP) draft acceptance, and multi-stream slot saturation.
+* **Scoring Mode Transparency:** Every benchmark declares `immediate` (live running accuracy) or `deferred` (batch-graded at run conclusion via Docker test runners, AST replay, or LLM judges) so a 100%-progress screen with no accuracy figure is never a surprise.
+* **Direct Cloud Provider Routing:** Provider-prefixed model strings (`google/*`, `deepseek/*`, `anthropic/*`, `openai/*`, `openrouter/*`) route natively through Inspect AI's vendors with credentials from `~/chai/.env` — no LiteLLM proxy overhead.
 * **Preflight Sanity Gate:** Automatically executes a 1-sample ping before initiating long multi-sample batches, catching socket, tokenizer, and schema mismatches in seconds.
-* **Hardened Multi-Turn Guardrails:** Eliminates runaway agent loops and context crashes by enforcing per-task `--turn-limit`, `--time-limit`, `--max-tool-output` truncation (16 KB), and per-turn `--max-tokens` caps.
+* **Hardened Multi-Turn Guardrails:** Eliminates runaway agent loops and context crashes by enforcing per-task `--turn-limit`, `--time-limit`, `--max-tool-output` truncation (16 KB), and per-turn `--max-tokens` caps — plus a watchdog timer with process-group kill escalation against orphaned CUDA/Docker subprocesses.
 * **Auto-Healing Dependency Doctor:** Detects benchmark-specific dependencies on the fly (e.g. `instruction_following_eval`, `inspect-harbor`, `sacrebleu`) and auto-installs them without manual intervention.
 * **Polite Docker Container Hygiene:** Automatically spins up isolated container sandboxes for coding (`HumanEval`, `MBPP`) and agentic execution (`GAIA`, `AgentBench`, `PawBench`), ensuring all containers are cleanly pruned post-run.
-* **Hardware & Throughput Profiling:** Tracks generation speed (tokens/sec), prompt caching efficiencies, and Speculative Decoding (MTP) draft acceptance rates.
-* **Multi-Format Export & Dashboards:** Stores structured per-sample logs in `logs/`, updates an append-only registry in `configs/models.yaml`, and generates an interactive HTML leaderboard in `dashboard/index.html`.
+* **Multi-Format Export & Dashboards:** Stores structured per-sample logs in `logs/`, updates an append-only registry in `configs/models.yaml` (including decode TPS / TTFT telemetry), and generates an interactive HTML leaderboard in `dashboard/index.html`.
 
 ---
 
@@ -26,7 +30,8 @@ EvalsBench/
 ├── requirements.txt          # Core dependencies (inspect-ai, inspect-evals, pyyaml, etc.)
 ├── run_evals.py              # CLI launcher shortcut
 ├── configs/
-│   └── models.yaml           # Historical database of all tested models and scores
+│   ├── benchmarks.yaml       # Declarative benchmark registry (single source of truth: presets, profiles, scales, catalog)
+│   └── models.yaml           # Historical database of all tested models, scores, and telemetry
 ├── dashboard/
 │   ├── index.html            # Interactive visual leaderboard dashboard
 │   ├── app.js                # Frontend data hydration and rendering
@@ -38,9 +43,10 @@ EvalsBench/
 │   ├── doctor.py             # Auto-healing dependency doctor
 │   ├── exporters.py          # Markdown scorecards, JSON exports, and vault sync
 │   ├── hydrator.py           # Dashboard data aggregation engine
-│   ├── progress.py           # Rich terminal live progress indicators
-│   ├── registry.py           # Curated benchmark catalog and preset suites
-│   ├── runner.py             # Async execution engine with preflight validation
+│   ├── progress.py           # LiveTelemetryMonitor (dual-row TTY + milestone transcript rendering)
+│   ├── registry.py           # Defensive YAML registry loader + difficulty stratification
+│   ├── router.py             # Direct cloud provider routing (vendor-native, ~/chai/.env keys)
+│   ├── runner.py             # Async execution engine with preflight, watchdog, and live telemetry hooks
 │   ├── sandboxes.py          # Docker container lifecycle management
 │   ├── shims.py              # Token-count and OpenAI compatibility patches
 │   ├── eds/                  # Evaluation Development System (Layer 1-5: typed models, world, tools, parser, linter, scaffold, solver, scorers, telemetry)
@@ -93,16 +99,20 @@ python3 -m evalsbench
 ```
 
 ### 3. Headless / Programmatic Invocation
-Run automated batches directly against any OpenAI-compatible API endpoint:
+Run automated batches directly against any OpenAI-compatible API endpoint — or straight to a cloud vendor via provider-prefixed model strings:
 
 ```bash
-# Run the Fast Screening Gauntlet (25 samples per benchmark)
+# 3D Matrix: core suite × gatekeeper profile × short scale (~10-12 min)
 python3 -m evalsbench \
   --model my-model \
   --endpoint http://localhost:8000/v1 \
-  --suite screening \
-  --limit 25 \
+  --suite core \
+  --difficulty-profile gatekeeper \
+  --short \
   --max-connections 8
+
+# Exhaustive frontier stress test on a cloud vendor (credentials from ~/chai/.env)
+python3 -m evalsbench --model google/gemini-2.5-flash --suite all -d echelon --complete
 
 # Run custom benchmark picks
 python3 -m evalsbench \
@@ -112,6 +122,10 @@ python3 -m evalsbench \
   --limit 10 \
   --max-connections 1
 ```
+
+**Sample Scale Flags (Dimension 3):** `--short` (20 questions/benchmark, ~10-12 min), `--long` (100 questions/benchmark, ~45-60 min), or `--complete` (exhaustive dataset, 2-6 hours). Explicit `--limit N` overrides the scale flags. Dataset ceilings are clamped automatically for bounded benchmarks (e.g. `custom-minicorp` caps at 16).
+
+**Modality Filter:** pass `--modality multimodal` (vision/document benchmarks only, currently `gaia` and `docvqa`) or `--modality text` (text-only benchmarks only) to narrow any suite or `--benchmarks` selection. Use `--modality text` for vision-incapable models.
 
 ### 4. Viewing the Visual Leaderboard
 Rebuild the aggregated scores and view the interactive dashboard:
@@ -124,6 +138,17 @@ Open `dashboard/index.html` in your browser.
 ---
 
 ## 🏛️ Preset Evaluation Suites
+
+V2 functional presets (Dimension 1 of the 3D Operational Matrix):
+
+| Suite Name | Included Benchmarks | Primary Target |
+| :--- | :--- | :--- |
+| `core` | `ifeval`, `bfcl`, `humaneval`, `custom-minicorp`, `writingbench` | Everyday baseline: instruction following, tool routing, code, agency, prose |
+| `agent` | `custom-minicorp`, `terminal_bench_2`, `gaia`, `assistant_bench` | Autonomous agentic execution, stateful tool loops, Docker sysadmin, multimodal |
+| `knowledge` | `writingbench`, `assistant_bench`, `deepsearchqa` | Long-form prose, open-web digital assistant, multi-hop deep research |
+| `all` | `ifeval`, `bfcl`, `humaneval`, `custom-minicorp`, `terminal_bench_2`, `writingbench`, `assistant_bench`, `gaia`, `docvqa`, `deepsearchqa` | Complete 10-benchmark evaluation gauntlet |
+
+Legacy suites (still available):
 
 | Suite Name | Included Benchmarks | Primary Target |
 | :--- | :--- | :--- |
@@ -145,6 +170,7 @@ EvalsBench introduces formal difficulty profiling to balance rapid operational s
 | :--- | :--- | :--- |
 | `gatekeeper` | **50% Easy / 40% Medium / 10% Hard** | Fast qualification & regression gate; filters broken parsers without wall-clock exhaustion |
 | `echelon` | **10% Easy / 50% Medium / 40% Hard** | Frontier stress-testing & model bakeoffs; concentrates samples where state-of-the-art models separate |
+| `full` | Natural dataset distribution | Unfiltered, unstratified runs across all available difficulty tiers |
 
 ```bash
 # Run the 7 Standard Evals under the Gatekeeper profile
@@ -186,6 +212,11 @@ python3 -m evalsbench --suite standard7 --difficulty-profile echelon --limit 25
 | `pawbench` | PawBench | `inspect_harbor/agentscope_ai_pawbench` | Docker | Harbor multi-agent interaction |
 | `aider_polyglot` | Aider Polyglot | `inspect_evals/aider_polyglot` | Docker | Code refactoring & editing across languages |
 | `minicorp` | MiniCorp (EDS) | `<abs>/evalsbench/eds/domains/minicorp/tasks.py@minicorp` | In-Process | EDS 16-scenario agency bench (lookup/scheduling/tickets/currency/restraint/focus/precision) on tri-axis scorer |
+| `custom-minicorp` | Custom-MiniCorp (EDS) | `<abs>/evalsbench/eds/domains/minicorp/tasks.py@minicorp` | In-Process | V2 alias under the `custom-` lexical prefix contract; routes to EDS tri-axis scoring |
+| `terminal_bench_2` | TerminalBench2 | `inspect_harbor/terminal_bench_2` | Docker | Autonomous real-world Linux sysadmin, compilation & troubleshooting |
+| `writingbench` | WritingBench | `inspect_evals/writingbench` | In-Process | Multi-domain long-form prose graded by a Claude Haiku judge |
+| `assistant_bench` | AssistantBench | `inspect_evals/assistant_bench_web_search_zero_shot` | In-Process | Real-world digital assistant tasks with web search & constraint resolution |
+| `deepsearchqa` | DeepSearchQA | `inspect_harbor/kgmon_deepsearchqa` | Docker | Google DeepMind 900-prompt multi-hop deep research retrieval |
 
 ---
 
@@ -229,26 +260,29 @@ Every EDS run projects each episode onto three independent axes and clamps the *
 
 ## 🛠️ How to Add a New Benchmark (Developer Guide)
 
-Adding a new benchmark to EvalsBench requires only 3 simple steps:
+`configs/benchmarks.yaml` is the single source of truth. Adding a new benchmark requires only 3 simple steps:
 
-### Step 1: Register the Benchmark in `evalsbench/registry.py`
-Define a `BenchmarkTask` entry in `BENCHMARK_REGISTRY`:
+### Step 1: Register the Benchmark in `configs/benchmarks.yaml`
+Add an entry under the `benchmarks` key (the Python loader in `evalsbench/registry.py` picks it up automatically, with a defensive in-code fallback):
 
-```python
-"newbench": BenchmarkTask(
-    name="NewBench",
-    task_id="inspect_evals/newbench",           # Inspect AI task path
-    description="Description of benchmark",
-    default_limit=25,
-    default_max_connections=8,
-    docker_required=False,                      # Set True if sandbox execution is required
-    turn_limit=10,                              # Max turns per sample
-    time_limit=180,                             # Timeout in seconds
-    max_tool_output=16384,                      # Max bytes returned per tool output
-    reasoning_history="none",                   # "none" or "all"
-    args=[],                                    # Extra inspect_ai CLI arguments
-),
+```yaml
+newbench:
+  name: NewBench
+  source: inspect_evals/newbench       # Provenance string
+  task_id: inspect_evals/newbench      # Inspect AI task path
+  is_custom: false                     # True for user-authored `custom-*` EDS benchmarks
+  category: coding
+  scoring_mode: deferred               # "immediate" (live accuracy) or "deferred" (batch graded)
+  default_limit: 25
+  default_max_connections: 8
+  time_limit: 180                      # Timeout in seconds
+  turn_limit: 10                       # Max turns per sample
+  docker_required: false               # Set true if sandbox execution is required
+  max_samples: null                    # Dataset ceiling for progress-counter clamping
+  description: "One-line plain English description (powers the CLI wizard & AI facilitation skill)."
 ```
+
+If the benchmark belongs in a preset, append its key to the relevant `presets` list in the same file.
 
 ### Step 2: Register Dependencies in `evalsbench/doctor.py`
 Add any external pip packages required by the benchmark to `BENCHMARK_DEPENDENCIES`:

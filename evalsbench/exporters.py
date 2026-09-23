@@ -81,6 +81,29 @@ EDS_AGGREGATE_KEYS: Sequence[str] = (
 #: Benchmark keys treated as EDS runs in the dashboard pipeline.
 EDS_BENCHMARK_KEYS: frozenset = frozenset({"minicorp", "eds_minicorp", "eds"})
 
+
+def is_eds_benchmark(benchmark_key: str) -> bool:
+    """Deterministic EDS-run detector (PRD §1.2 ``custom-`` contract).
+
+    The ``custom-`` lexical prefix formally isolates user-authored EDS
+    benchmarks (e.g. ``custom-minicorp``) from upstream libraries
+    (``inspect_evals``, ``inspect_harbor``). Any key carrying the
+    prefix routes to EDS tri-axis scoring, EDS scorecard fan-out, and
+    the dashboard's tri-axis columns, in addition to the canonical
+    :data:`EDS_BENCHMARK_KEYS` members.
+
+    Args:
+        benchmark_key: Registry key of the benchmark (case-insensitive).
+
+    Returns:
+        bool: ``True`` when the benchmark must follow the EDS export
+        path.
+    """
+    if not benchmark_key:
+        return False
+    key = str(benchmark_key).strip().lower()
+    return key in EDS_BENCHMARK_KEYS or key.startswith("custom-")
+
 #: Dashboard marker added to benchmark entries so the front-end knows to
 #: render tri-axis columns. Pure data hint — never read by the scorer.
 EDS_DASHBOARD_TAG: str = "eds_tri_axis"

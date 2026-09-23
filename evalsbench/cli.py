@@ -8,7 +8,13 @@ from pathlib import Path
 from typing import List, Optional, Sequence, Tuple
 
 from .config import auto_probe_local_endpoint, load_chai_env
-from .registry import BENCHMARK_REGISTRY, PRESET_SUITES, DIFFICULTY_PROFILES
+from .registry import (
+    BENCHMARK_REGISTRY,
+    PRESET_SUITES,
+    DIFFICULTY_PROFILES,
+    SCALES,
+    filter_tasks_by_modality,
+)  # noqa: F401 - PRESET_SUITES/SCALES re-exported for wizard rendering
 from .runner import EvalsRunner
 
 
@@ -185,10 +191,16 @@ def parse_args():
     parser.add_argument("--model", "-m", type=str, default=None, help="Model alias or name (e.g. nemotron3.5-lightning)")
     parser.add_argument("--endpoint", "-e", type=str, default=None, help="OpenAI-compatible base URL (e.g. http://localhost:2468/v1)")
     parser.add_argument("--api-key", "-k", type=str, default=None, help="API key (defaults to dummy for local or reads ~/chai/.env)")
-    parser.add_argument("--suite", "-s", type=str, choices=list(PRESET_SUITES.keys()), default=None, help="Preconfigured benchmark suite")
+    parser.add_argument("--suite", "-s", type=str, choices=list(PRESET_SUITES.keys()), default=None, help="Preconfigured benchmark suite (core, agent, knowledge, all, or legacy suites)")
     parser.add_argument("--benchmarks", "-b", type=str, default=None, help="Comma-separated list of individual benchmarks to run")
-    parser.add_argument("--difficulty-profile", "-d", type=str, choices=list(DIFFICULTY_PROFILES.keys()), default=None, help="Difficulty stratification profile (gatekeeper: 50/40/10, echelon: 10/50/40)")
-    parser.add_argument("--limit", "-l", type=int, default=None, help="Number of samples to evaluate per benchmark")
+    parser.add_argument("--difficulty-profile", "-d", type=str, choices=list(DIFFICULTY_PROFILES.keys()), default=None, help="Difficulty stratification profile (gatekeeper: 50/40/10, echelon: 10/50/40, full: natural)")
+    parser.add_argument("--modality", type=str, choices=["multimodal", "text"], default=None, help="Keep only multimodal (vision/document) or text-only benchmarks from the selection")
+    # --- Dimension 3: Sample Scale Flags (PRD §3.3) ---
+    parser.add_argument("--short", action="store_true", help="20 questions per benchmark (~10-12 min local) — fast iteration & CI")
+    parser.add_argument("--long", action="store_true", help="100 questions per benchmark (~45-60 min) — leaderboard confidence")
+    parser.add_argument("--complete", action="store_true", help="All questions per benchmark (exhaustive dataset, 2-6 hours)")
+    parser.add_argument("--time-limit", "-t", type=int, default=None, help="Per-run wall-clock override in seconds (default: per-benchmark time_limit)")
+    parser.add_argument("--limit", "-l", type=int, default=None, help="Number of samples to evaluate per benchmark (overrides --short/--long/--complete)")
     parser.add_argument("--max-connections", "-c", type=int, default=None, help="Concurrent parallel connection slots")
     parser.add_argument("--skip-preflight", action="store_true", help="Skip 1-sample preflight validation gate")
     parser.add_argument("--no-chai-sync", action="store_true", help="Disable auto-syncing scorecards to ~/chai/references/models/")
@@ -196,25 +208,61 @@ def parse_args():
     return parser.parse_args()
 
 
+def _load_yaml_descriptions() -> Tuple[dict, dict, dict]:
+    """Pull 1-line plain-English descriptions from benchmarks.yaml.
+
+    Defensive: any read/parse failure degrades to empty dicts and the
+    wizard falls back to its static labels.
+    """
+    preset_descs: dict = {}
+    scale_descs: dict = {}
+    profile_descs: dict = {}
+    try:
+        import yaml
+
+        yaml_path = Path(__file__).resolve().parent.parent / "configs" / "benchmarks.yaml"
+        with open(yaml_path, "r", encoding="utf-8") as fp:
+            data = yaml.safe_load(fp) or {}
+        for name, spec in (data.get("presets") or {}).items():
+            if isinstance(spec, dict) and spec.get("description"):
+                preset_descs[name] = spec["description"]
+        for name, spec in (data.get("scales") or {}).items():
+            if isinstance(spec, dict) and spec.get("description"):
+                scale_descs[name] = spec["description"]
+        for name, spec in (data.get("profiles") or {}).items():
+            if isinstance(spec, dict) and spec.get("description"):
+                profile_descs[name] = spec["description"]
+    except Exception:
+        pass
+    return preset_descs, scale_descs, profile_descs
+
+
 def guided_checkin(
     default_model: str,
     default_endpoint: str,
-) -> Tuple[str, str, str, List[str], int, int, bool]:
+) -> Tuple[str, str, str, List[str], Optional[int], int, bool, Optional[str], bool]:
     """
-    Polite, step-by-step guided check-in asking the user:
+    Dynamic guided check-in (PRD §6.5) asking the user:
     1. Endpoint & Model
     2. API Key
-    3. Benchmark Selection
-    4. Sample Count (Questions)
-    5. Parallel Slots
-    6. Preflight Sanity Check
+    3. Suite Selection (1-line descriptions from benchmarks.yaml)
+    4. Difficulty Profile (1-line descriptions)
+    5. Sample Scale (1-line descriptions)
+    6. Parallel Slots
+    7. Preflight Sanity Check
+
+    Returns:
+        (model, endpoint, api_key, tasks, limit, slots, skip_preflight,
+         difficulty_profile, exhaustive)
     """
+    preset_descs, scale_descs, profile_descs = _load_yaml_descriptions()
+
     print("\n" + "=" * 65)
     print("🎯 EvalsBench: Model Evaluation Setup & Check-in")
     print("=" * 65)
 
     # 1. Endpoint & Model
-    print(f"\n[1/6] 📡 Target Endpoint & Model")
+    print(f"\n[1/7] 📡 Target Endpoint & Model")
     print(f"      Detected Local Endpoint: {default_endpoint}")
     print(f"      Detected Model Name:     {default_model}")
     ep_in = input(f"      Use this endpoint? [Enter=Yes, or type new URL]: ").strip()
@@ -227,7 +275,7 @@ def guided_checkin(
         model = default_model
 
     # 2. API Key
-    print(f"\n[2/6] 🔐 API Credentials")
+    print(f"\n[2/7] 🔐 API Credentials")
     chai_env = load_chai_env()
     default_key = "dummy"
     if "openrouter.ai" in endpoint:
@@ -239,58 +287,91 @@ def guided_checkin(
     key_in = input(f"      API Key [{key_masked}]: ").strip()
     api_key = key_in if key_in else default_key
 
-    # 3. Benchmark Suite Selection
-    print(f"\n[3/6] 📋 Benchmark Selection")
-    print("      [1] Fast Screening Gauntlet (IFEval, HumanEval, IFEvalCode, AgentBench - ~15 min)")
-    print("      [2] Coding & Syntax Gauntlet (HumanEval, IFEvalCode, MBPP, LiveCodeBench)")
-    print("      [3] Agentic & OS Gauntlet (AgentBench, PawBench, GAIA)")
-    print("      [4] Instruction & Constraint Gauntlet (IFEval Strict, IFEvalCode)")
-    print("      [5] Full Master Gauntlet (All Verified Benchmarks Sequentially)")
-    print("      [6] Single Benchmark Pick")
-    print("      [q] Quit")
-    
-    suite_choice = input("      Select suite [1-6, default=1]: ").strip().lower()
+    # 3. Suite Selection (dynamic, with 1-line explanations)
+    print(f"\n[3/7] 📋 Suite Selection")
+    suite_names = list(PRESET_SUITES.keys())
+    for idx, name in enumerate(suite_names, 1):
+        desc = preset_descs.get(name, f"{len(PRESET_SUITES[name])} benchmarks")
+        print(f"      [{idx}] {name} — {desc}")
+    print(f"      [p] Single Benchmark Pick")
+
+    suite_choice = input(f"      Select suite [1-{len(suite_names)}, default=core]: ").strip().lower()
     if suite_choice == "q":
         sys.exit(0)
 
-    suite_map = {
-        "": "screening",
-        "1": "screening",
-        "2": "coding",
-        "3": "agentic",
-        "4": "instruction",
-        "5": "full",
-    }
-
-    if suite_choice in suite_map:
-        tasks = PRESET_SUITES[suite_map[suite_choice]]
-    elif suite_choice == "6":
+    tasks: List[str]
+    if suite_choice == "p":
         print("\n      Available individual benchmarks:")
         keys = list(BENCHMARK_REGISTRY.keys())
         for idx, k in enumerate(keys, 1):
-            print(f"        [{idx}] {BENCHMARK_REGISTRY[k].name} ({k})")
+            scoring = getattr(BENCHMARK_REGISTRY[k], "scoring_mode", "deferred")
+            print(f"        [{idx}] {BENCHMARK_REGISTRY[k].name} ({k}) — scoring: {scoring}")
         pick = input("      Enter benchmark name or number: ").strip().lower()
         if pick.isdigit() and 1 <= int(pick) <= len(keys):
             tasks = [keys[int(pick) - 1]]
         elif pick in BENCHMARK_REGISTRY:
             tasks = [pick]
         else:
-            tasks = PRESET_SUITES["screening"]
+            tasks = PRESET_SUITES["core"]
     else:
-        tasks = PRESET_SUITES["screening"]
+        suite_key = ""
+        if suite_choice.isdigit() and 1 <= int(suite_choice) <= len(suite_names):
+            suite_key = suite_names[int(suite_choice) - 1]
+        elif suite_choice in PRESET_SUITES:
+            suite_key = suite_choice
+        else:
+            suite_key = "core"
+        tasks = PRESET_SUITES[suite_key]
 
-    # 4. Sample Count (Questions)
-    print(f"\n[4/6] 🔢 Sample Count (Questions per benchmark)")
-    limit_in = input("      Enter sample limit [default=25, or 5/50/100]: ").strip()
-    limit = int(limit_in) if limit_in.isdigit() else 25
+    # Preview exactly what will run before launch (PRD §6.5).
+    print("\n      🔎 Preview — tests included in this run:")
+    for t in tasks:
+        task = BENCHMARK_REGISTRY.get(t)
+        if task:
+            print(f"        • {task.name} ({t}) — {task.description}")
 
-    # 5. Parallel Slots
-    print(f"\n[5/6] ⚡ Concurrent Parallel Slots")
+    # 4. Difficulty Profile
+    print(f"\n[4/7] 🧠 Difficulty Profile")
+    profile_names = list(DIFFICULTY_PROFILES.keys())
+    for idx, name in enumerate(profile_names, 1):
+        desc = profile_descs.get(name, "stratification profile")
+        print(f"      [{idx}] {name} — {desc}")
+    print(f"      [Enter] Skip stratification (natural distribution)")
+    prof_in = input(f"      Select profile [1-{len(profile_names)}, default=skip]: ").strip().lower()
+    difficulty_profile: Optional[str] = None
+    if prof_in.isdigit() and 1 <= int(prof_in) <= len(profile_names):
+        difficulty_profile = profile_names[int(prof_in) - 1]
+    elif prof_in in DIFFICULTY_PROFILES:
+        difficulty_profile = prof_in
+
+    # 5. Sample Scale
+    print(f"\n[5/7] 🔢 Sample Scale (questions per benchmark)")
+    scale_names = [s for s in ("short", "long", "complete") if s in SCALES]
+    for idx, name in enumerate(scale_names, 1):
+        desc = scale_descs.get(name, "")
+        print(f"      [{idx}] {name} — {desc}")
+    print(f"      [Enter] Custom count (default 25)")
+    scale_in = input(f"      Select scale [1-{len(scale_names)}, or a number, default=25]: ").strip().lower()
+    limit: Optional[int] = 25
+    exhaustive = False
+    if scale_in.isdigit() and 1 <= int(scale_in) <= len(scale_names):
+        chosen = scale_names[int(scale_in) - 1]
+        scale_limit = SCALES[chosen].get("limit")
+        if scale_limit is None:
+            exhaustive = True
+            limit = None
+        else:
+            limit = int(scale_limit)
+    elif scale_in.isdigit():
+        limit = int(scale_in)
+
+    # 6. Parallel Slots
+    print(f"\n[6/7] ⚡ Concurrent Parallel Slots")
     slots_in = input("      Enter concurrent slots [default=8]: ").strip()
     slots = int(slots_in) if slots_in.isdigit() else 8
 
-    # 6. Preflight Sanity Gate
-    print(f"\n[6/6] 🔍 Preflight Sanity Check (1-sample ping before batch)")
+    # 7. Preflight Sanity Gate
+    print(f"\n[7/7] 🔍 Preflight Sanity Check (1-sample ping before batch)")
     pre_in = input("      Run 1-sample preflight check? [Y/n, default=Y]: ").strip().lower()
     skip_preflight = (pre_in == "n")
 
@@ -298,12 +379,14 @@ def guided_checkin(
     print("🚀 Confirmation Summary:")
     print(f"   • Model:        {model} @ {endpoint}")
     print(f"   • Benchmarks:   {', '.join(tasks)}")
-    print(f"   • Samples:      {limit} per benchmark")
+    scale_label = "all (exhaustive)" if exhaustive else f"{limit} per benchmark"
+    print(f"   • Samples:      {scale_label}")
+    print(f"   • Profile:      {difficulty_profile or 'natural (unstratified)'}")
     print(f"   • Slots:        {slots} concurrent")
     print(f"   • Preflight:    {'Enabled' if not skip_preflight else 'Skipped'}")
     print("=" * 65 + "\n")
 
-    return model, endpoint, api_key, tasks, limit, slots, skip_preflight
+    return model, endpoint, api_key, tasks, limit, slots, skip_preflight, difficulty_profile, exhaustive
 
 
 def main():
@@ -320,8 +403,24 @@ def main():
     endpoint = args.endpoint
     model = args.model
     api_key = args.api_key
-    limit = args.limit or 25
+
+    # Dimension 3 — Sample Scale resolution (PRD §3.3). Explicit
+    # --limit wins over the scale shortcut flags.
+    exhaustive = False
+    if args.limit is not None:
+        limit = args.limit
+    elif args.complete:
+        exhaustive = True
+        limit = None
+    elif args.short:
+        limit = SCALES.get("short", {}).get("limit", 20)
+    elif args.long:
+        limit = SCALES.get("long", {}).get("limit", 100)
+    else:
+        limit = 25
+
     slots = args.max_connections or 8
+    time_limit = args.time_limit
     if args.dashboard:
         from .hydrator import rebuild_leaderboard_json
         path = rebuild_leaderboard_json()
@@ -346,14 +445,32 @@ def main():
 
     # If run without suite or benchmark arguments and in interactive terminal
     if not args.benchmarks and not args.suite and sys.stdin.isatty():
-        model, endpoint, api_key, tasks_to_run, limit, slots, skip_preflight = guided_checkin(model, endpoint)
+        (model, endpoint, api_key, tasks_to_run, limit, slots,
+         skip_preflight, wizard_profile, wizard_exhaustive) = guided_checkin(model, endpoint)
+        difficulty_profile = wizard_profile
+        if wizard_exhaustive:
+            exhaustive = True
+            limit = None
     else:
+        difficulty_profile = args.difficulty_profile
         if args.benchmarks:
             tasks_to_run = [b.strip().lower() for b in args.benchmarks.split(",") if b.strip()]
         elif args.suite:
-            tasks_to_run = PRESET_SUITES.get(args.suite, PRESET_SUITES["screening"])
+            tasks_to_run = PRESET_SUITES.get(args.suite, PRESET_SUITES["core"])
         else:
-            tasks_to_run = PRESET_SUITES["screening"]
+            tasks_to_run = PRESET_SUITES["core"]
+
+    # Modality filter (--modality multimodal|text): narrows the resolved
+    # selection to benchmarks matching the requested input modality.
+    if args.modality:
+        tasks_to_run, dropped = filter_tasks_by_modality(tasks_to_run, args.modality)
+        if dropped:
+            print(f"\n🔎 [Modality Filter] {args.modality}-only: dropped {', '.join(dropped)}")
+        if not tasks_to_run:
+            print(f"❌ No benchmarks match modality '{args.modality}' in the resolved selection. "
+                  f"Multimodal benchmarks in the catalog: "
+                  f"{[k for k, t in BENCHMARK_REGISTRY.items() if t.multimodal]}")
+            sys.exit(1)
 
     runner = EvalsRunner(
         model_name=model,
@@ -361,7 +478,7 @@ def main():
         api_key=api_key,
         max_connections=slots,
         chai_sync=not args.no_chai_sync,
-        difficulty_profile=args.difficulty_profile,
+        difficulty_profile=difficulty_profile,
     )
 
     print(f"\n🎯 Launching EvalsBench Suite for [{model}] across {len(tasks_to_run)} benchmarks:")
@@ -374,6 +491,8 @@ def main():
             task_key=task_key,
             limit=limit,
             skip_preflight=skip_preflight,
+            time_limit=time_limit,
+            exhaustive=exhaustive,
         )
         results_summary[task_key] = {"success": success, "scores": scores, "duration": duration}
 
